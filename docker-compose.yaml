@@ -1,0 +1,22 @@
+services:
+  backend:
+    build: ./backend/
+    image: backend_image
+    container_name: backend_container
+    ports: 
+      - "${BACKEND_PORT}:${BACKEND_PORT}"
+    env_file:
+      - .env
+  
+  frontend:
+    build: ./frontend/
+    image: frontend_image
+    container_name: frontend_container
+    ports:
+      - "${FRONTEND_PORT}:${FRONTEND_PORT}"
+    env_file:
+      - .env
+    environment:
+      - REACT_APP_BACKEND_URL=http://localhost:${BACKEND_PORT}
+    depends_on:
+      - backend
