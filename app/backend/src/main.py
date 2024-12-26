@@ -11,10 +11,12 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
 @app.get("/")
 async def hello_world():
     return "Hello, World!"
 
+
 @app.get("/api/v1/message")
 async def get_message():
-    return {"message": "hello"}
+    return {"message": "Hello"}

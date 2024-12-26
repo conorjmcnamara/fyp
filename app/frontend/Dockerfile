@@ -1,4 +1,4 @@
-FROM node:16-alpine
+FROM node:18-alpine
 
 WORKDIR /app
 
@@ -7,6 +7,7 @@ RUN npm install
 
 COPY src/ ./src
 COPY public/ ./public
+COPY config-overrides.js ./
 COPY tsconfig.json ./
 
 RUN npm run build

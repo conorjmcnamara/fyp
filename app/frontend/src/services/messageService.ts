@@ -1,10 +1,10 @@
-import { fetchApi } from "./api";
-import { BACKEND_URL } from "../config";
+import { api } from '../utils/api';
+import config from '../config/config';
 
 interface MessageResponse {
-    message: string;
+  message: string;
 }
 
-export const fetchMessage = (): Promise<MessageResponse> => {
-    return fetchApi<MessageResponse>(`${BACKEND_URL}/api/v1/message`);
+export const fetchMessage = async (): Promise<MessageResponse> => {
+  return api<MessageResponse>(config.apiBaseUrl, 'api/v1/message');
 };
