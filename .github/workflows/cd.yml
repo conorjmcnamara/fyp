@@ -28,12 +28,17 @@ jobs:
       - name: Build Docker Compose services
         run: |
           docker compose -f ./app/docker-compose.yaml build
+          docker images
  
       - name: Tag Docker images
         run: |
           BACKEND_IMAGE="${{ secrets.DOCKERHUB_USERNAME }}/fyp-backend"
           FRONTEND_IMAGE="${{ secrets.DOCKERHUB_USERNAME }}/fyp-frontend"
           SHA_TAG="${GITHUB_SHA}"
+
+          echo "BACKEND_IMAGE: $BACKEND_IMAGE"
+          echo "FRONTEND_IMAGE: $FRONTEND_IMAGE"
+          echo "SHA_TAG: $SHA_TAG"
 
           docker tag backend_image $BACKEND_IMAGE:$SHA_TAG
           docker tag frontend_image $FRONTEND_IMAGE:$SHA_TAG
