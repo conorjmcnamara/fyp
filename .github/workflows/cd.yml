@@ -16,9 +16,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-      
       - name: Login to Docker Hub
         uses: docker/login-action@v3
         with:
@@ -28,23 +25,15 @@ jobs:
       - name: Build Docker Compose services
         run: |
           docker compose -f ./app/docker-compose.yaml build
-          docker images
  
       - name: Tag Docker images
         run: |
           IMAGE_NAME="${{ secrets.DOCKERHUB_USERNAME }}/fyp"
-          SHA="${GITHUB_SHA}"
-
-          docker tag backend_image $IMAGE_NAME:backend-$SHA_TAG
-          docker tag frontend_image $FRONTEND_IMAGE:frontend-$SHA_TAG
 
           docker tag backend_image $IMAGE_NAME:backend-latest
           docker tag frontend_image $IMAGE_NAME:frontend-latest
         
       - name: Push Docker images to Docker Hub
         run: |
-          docker push $IMAGE_NAME:backend-$SHA_TAG
-          docker push $IMAGE_NAME:frontend-$SHA_TAG
-
           docker push $IMAGE_NAME:backend-latest
           docker push $IMAGE_NAME:frontend-latest
