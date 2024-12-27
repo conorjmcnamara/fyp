@@ -30,8 +30,8 @@ jobs:
         run: |
           IMAGE_NAME="${{ secrets.DOCKERHUB_USERNAME }}/fyp"
 
-          docker tag backend_image $IMAGE_NAME:backend-latest
-          docker tag frontend_image $IMAGE_NAME:frontend-latest
+          docker tag backend_container $IMAGE_NAME:backend-latest
+          docker tag frontend_container $IMAGE_NAME:frontend-latest
         
       - name: Push Docker images to Docker Hub
         run: |
