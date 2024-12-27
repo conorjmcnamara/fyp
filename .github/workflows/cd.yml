@@ -12,38 +12,39 @@ jobs:
   docker-hub:
     runs-on: ubuntu-latest
 
-    - name: Checkout repository
-      uses: actions/checkout@v4
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v3
-    
-    - name: Login to Docker Hub
-      uses: docker/login-action@v3
-      with:
-        username: ${{ secrets.DOCKERHUB_USERNAME }}
-        password: ${{ secrets.DOCKERHUB_PASSWORD }}
-    
-    - name: Build Docker Compose services
-      run: |
-        docker compose -f ./app/docker-compose.yaml build
-    
-    - name: Tag Docker images
-      run: |
-        BACKEND_IMAGE="${{ secrets.DOCKERHUB_USERNAME }}/backend_image"
-        FRONTEND_IMAGE="${{ secrets.DOCKERHUB_USERNAME }}/frontend_image
-        SHA_TAG="${GITHUB_SHA}"
-
-        docker tag backend_image:latest $BACKEND_IMAGE:$SHA_TAG
-        docker tag frontend_image:latest $FRONTEND_IMAGE:$SHA_TAG
-
-        docker tag backend_image:latest $BACKEND_IMAGE:latest
-        docker tag frontend_image:latest $FRONTEND_IMAGE:latest
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
       
-    - name: Push Docker images to Docker Hub
-      run: |
-        docker push $BACKEND_IMAGE:$SHA_TAG
-        docker push $FRONTEND_IMAGE:$SHA_TAG
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+      
+      - name: Build Docker Compose services
+        run: |
+          docker compose -f ./app/docker-compose.yaml build
+      
+      - name: Tag Docker images
+        run: |
+          BACKEND_IMAGE="${{ secrets.DOCKERHUB_USERNAME }}/backend_image"
+          FRONTEND_IMAGE="${{ secrets.DOCKERHUB_USERNAME }}/frontend_image"
+          SHA_TAG="${GITHUB_SHA}"
 
-        docker push $BACKEND_IMAGE:latest
-        docker push $FRONTEND_IMAGE:latest
+          docker tag backend_image:latest $BACKEND_IMAGE:$SHA_TAG
+          docker tag frontend_image:latest $FRONTEND_IMAGE:$SHA_TAG
+
+          docker tag backend_image:latest $BACKEND_IMAGE:latest
+          docker tag frontend_image:latest $FRONTEND_IMAGE:latest
+        
+      - name: Push Docker images to Docker Hub
+        run: |
+          docker push $BACKEND_IMAGE:$SHA_TAG
+          docker push $FRONTEND_IMAGE:$SHA_TAG
+
+          docker push $BACKEND_IMAGE:latest
+          docker push $FRONTEND_IMAGE:latest
