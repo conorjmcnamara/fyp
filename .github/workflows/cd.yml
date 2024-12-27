@@ -30,11 +30,13 @@ jobs:
       - name: Tag Docker images
         run: |
           TAG_NAME="cmcnamara33/fyp"
+          echo "TAG_NAME is set to: $TAG_NAME"
           
           docker tag backend_image $TAG_NAME:backend-latest
           docker tag frontend_image $TAG_NAME:frontend-latest
           
       - name: Push Docker images to Docker Hub
         run: |
+          echo "TAG_NAME is set to: $TAG_NAME"
           docker push $TAG_NAME:backend-latest
           docker push $TAG_NAME:frontend-latest
