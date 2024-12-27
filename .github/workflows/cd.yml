@@ -22,18 +22,20 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
       
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      
       - name: Build Docker Compose services
         run: |
           docker compose -f ./app/docker-compose.yaml build
- 
-      - name: Tag Docker images
-        run: |
-          IMAGE_NAME="${{ secrets.DOCKERHUB_USERNAME }}/fyp"
 
-          docker tag backend_container $IMAGE_NAME:backend-latest
-          docker tag frontend_container $IMAGE_NAME:frontend-latest
-        
-      - name: Push Docker images to Docker Hub
-        run: |
-          docker push $IMAGE_NAME:backend-latest
-          docker push $IMAGE_NAME:frontend-latest
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          push: true
+          tags: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/fyp:backend-latest
+            ${{ secrets.DOCKERHUB_USERNAME }}/fyp:frontend-latest
