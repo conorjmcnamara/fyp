@@ -32,24 +32,19 @@ jobs:
  
       - name: Tag Docker images
         run: |
-          BACKEND_IMAGE="${{ secrets.DOCKERHUB_USERNAME }}/fyp-backend"
-          FRONTEND_IMAGE="${{ secrets.DOCKERHUB_USERNAME }}/fyp-frontend"
-          SHA_TAG="${GITHUB_SHA}"
+          IMAGE_NAME="${{ secrets.DOCKERHUB_USERNAME }}/fyp"
+          SHA="${GITHUB_SHA}"
 
-          echo "BACKEND_IMAGE: $BACKEND_IMAGE"
-          echo "FRONTEND_IMAGE: $FRONTEND_IMAGE"
-          echo "SHA_TAG: $SHA_TAG"
+          docker tag backend_image $IMAGE_NAME:backend-$SHA_TAG
+          docker tag frontend_image $FRONTEND_IMAGE:frontend-$SHA_TAG
 
-          docker tag backend_image $BACKEND_IMAGE:$SHA_TAG
-          docker tag frontend_image $FRONTEND_IMAGE:$SHA_TAG
-
-          docker tag backend_image $BACKEND_IMAGE:latest
-          docker tag frontend_image $FRONTEND_IMAGE:latest
+          docker tag backend_image $IMAGE_NAME:backend-latest
+          docker tag frontend_image $IMAGE_NAME:frontend-latest
         
       - name: Push Docker images to Docker Hub
         run: |
-          docker push $BACKEND_IMAGE:$SHA_TAG
-          docker push $FRONTEND_IMAGE:$SHA_TAG
+          docker push $IMAGE_NAME:backend-$SHA_TAG
+          docker push $IMAGE_NAME:frontend-$SHA_TAG
 
-          docker push $BACKEND_IMAGE:latest
-          docker push $FRONTEND_IMAGE:latest
+          docker push $IMAGE_NAME:backend-latest
+          docker push $IMAGE_NAME:frontend-latest
