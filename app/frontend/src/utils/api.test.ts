@@ -31,7 +31,7 @@ describe('api', () => {
     await expect(api('https://example.com', 'nonexistent-endpoint')).rejects.toThrow('Not found');
   });
 
-  it('should thorw a default error message when the response does not include an error message', async () => {
+  it('should throw a default error message when the response does not include an error message', async () => {
     (fetch as jest.Mock).mockResolvedValueOnce({
       ok: false,
       status: 500,
