@@ -97,5 +97,4 @@ jobs:
       
       - name: Build Docker Compose services
         run: |
-          set -e
-          docker compose -f ./app/docker-compose.yaml build
+          docker compose -f ./app/docker-compose.yaml build --abort-on-container-exit
