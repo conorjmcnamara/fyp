@@ -97,4 +97,5 @@ jobs:
       
       - name: Build Docker Compose services
         run: |
-          docker compose -f ./app/docker-compose.yaml build --fail-fast
+          set -e
+          docker compose -f ./app/docker-compose.yaml build
