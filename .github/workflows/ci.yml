@@ -101,4 +101,4 @@ jobs:
       
       - name: Run Docker Compose services
         run: |
-          docker compose -f ./app/docker-compose.yaml up --abort-on-container-exit
+          docker compose -f ./app/docker-compose.yaml up -d --abort-on-container-exit
