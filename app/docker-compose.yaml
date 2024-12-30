@@ -7,6 +7,12 @@ services:
       - "${BACKEND_PORT}:${BACKEND_PORT}"
     env_file:
       - .env
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:${BACKEND_PORT}/docs"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
   
   frontend:
     build: ./frontend/
@@ -20,3 +26,9 @@ services:
       - REACT_APP_BACKEND_URL=http://localhost:${BACKEND_PORT}
     depends_on:
       - backend
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:${FRONTEND_PORT}"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
