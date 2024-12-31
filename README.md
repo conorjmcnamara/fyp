@@ -8,7 +8,7 @@ Set `BACKEND_PORT` and `FRONTEND_PORT` in `/app/.env` to define the ports for th
 ./scripts/startup.sh
 ```
 
-Once started, the backend API and web application will run in Docker containers and can be accessed at [http://localhost:8000](http://localhost:8000) and [http://localhost:3000](http://localhost:3000), respectively.
+Once started, the backend API and web application will run in Docker containers and can be accessed at [http://localhost:8000](http://localhost:8000) and [http://localhost:3000](http://localhost:3000), respectively. Additionally, the Swagger UI for the API documentation can be accessed at [http://localhost:8000/docs](http://localhost:8000/docs).
 
 ### Shutdown
 ```sh
