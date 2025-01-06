@@ -11,7 +11,6 @@ describe('fetchMessage', () => {
 
   it('should call api with the correct endpoint and return the message response on success', async () => {
     const mockMessageResponse = { message: 'Hello' };
-
     (api as jest.Mock).mockResolvedValueOnce(mockMessageResponse);
 
     const result = await fetchMessage();
@@ -22,7 +21,6 @@ describe('fetchMessage', () => {
 
   it('should propagate errors thrown by api', async () => {
     const errorMessage = 'Error';
-
     (api as jest.Mock).mockRejectedValueOnce(new Error(errorMessage));
 
     await expect(fetchMessage()).rejects.toThrow(errorMessage);

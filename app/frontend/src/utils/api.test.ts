@@ -40,4 +40,18 @@ describe('api', () => {
 
     await expect(api('https://example.com', 'error-endpoint')).rejects.toThrow('Error: 500');
   });
+
+  it('should handle request options', async () => {
+    const mockResponse = { data: 'Custom options' };
+    (fetch as jest.Mock).mockResolvedValueOnce({
+      ok: true,
+      json: async () => mockResponse
+    });
+  
+    const options = { method: 'POST', headers: { 'Content-Type': 'application/json' } };
+    const result = await api('https://example.com', 'endpoint', options);
+  
+    expect(result).toEqual(mockResponse);
+    expect(fetch).toHaveBeenCalledWith('https://example.com/endpoint', options);
+  });
 });

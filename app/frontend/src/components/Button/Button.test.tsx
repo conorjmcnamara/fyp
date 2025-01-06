@@ -8,7 +8,6 @@ jest.mock('../../services/messageService');
 describe('Button Component', () => {
   it('should render and fetch the message when clicked', async () => {
     (fetchMessage as jest.Mock).mockResolvedValue({ message: 'Hello'});
-
     render(<Button />);
 
     const button = screen.getByText(/Get Message/i);
@@ -24,7 +23,6 @@ describe('Button Component', () => {
 
   it('should show an error message if the API call fails', async() => {
     (fetchMessage as jest.Mock).mockRejectedValue(new Error('Failed to fetch message'));
-
     render(<Button />);
 
     const button = screen.getByText(/Get Message/i);
