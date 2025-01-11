@@ -5,6 +5,7 @@ Set `BACKEND_PORT` and `FRONTEND_PORT` in `/app/.env` to define the ports for th
 
 ### Startup
 ```sh
+cd app
 ./scripts/startup.sh
 ```
 
@@ -12,6 +13,7 @@ Once started, the backend API and web application will run in Docker containers 
 
 ### Shutdown
 ```sh
+cd app
 ./scripts/shutdown.sh
 ```
 
