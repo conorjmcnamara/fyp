@@ -1,7 +1,5 @@
-import json
-from models.paper import Paper
-from utils.file_utils import save_papers_to_json
-from config.settings import TEST_SET_YEAR
+from src.utils.file_utils import read_parsed_papers_from_json, save_papers_to_json
+from src.config.settings import TEST_SET_YEAR
 
 
 class DatasetSplitter:
@@ -11,21 +9,15 @@ class DatasetSplitter:
         train_file_path: str,
         test_file_path: str
     ) -> None:
+        papers = read_parsed_papers_from_json(input_file_path)
         train_papers = []
         test_papers = []
 
-        with open(input_file_path, 'r', encoding="utf-8") as file:
-            for line in file:
-                try:
-                    paper = Paper(**json.loads(line))
-
-                    if paper.year >= TEST_SET_YEAR:
-                        test_papers.append(paper)
-                    else:
-                        train_papers.append(paper)
-
-                except json.JSONDecodeError as e:
-                    print(f"Error decoding JSON on line: {line} -> {e}")
+        for paper in papers:
+            if paper.year >= TEST_SET_YEAR:
+                test_papers.append(paper)
+            else:
+                train_papers.append(paper)
 
         train_ids = set(train_paper.id for train_paper in train_papers)
         for test_paper in test_papers:

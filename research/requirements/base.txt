@@ -1,2 +1,6 @@
+faiss-cpu
 json
 matplotlib
+numpy>=1.25.0,<2.0
+torch
+transformers
