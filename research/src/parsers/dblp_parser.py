@@ -1,9 +1,13 @@
 import json
 from typing import Dict, Callable, Any
-from models.paper import Paper
-from parsers.dblp_txt_field import DblpTxtField
-from utils.file_utils import save_papers_to_json
-from config.settings import MIN_CITATION_COUNT_FILTER, MIN_REFERENCE_COUNT_FILTER, MIN_YEAR_FILTER
+from src.data_models.paper import Paper
+from src.parsers.dblp_txt_field import DblpTxtField
+from src.utils.file_utils import save_papers_to_json
+from src.config.settings import (
+    MIN_CITATION_COUNT_FILTER,
+    MIN_REFERENCE_COUNT_FILTER,
+    MIN_YEAR_FILTER
+)
 
 
 class DblpParser():
@@ -57,12 +61,12 @@ class DblpParser():
 
         with open(file_path, 'r', encoding="utf-8") as file:
             for line in file:
-                line = line.strip()
+                line = line.strip().strip(',')
                 if not line or line.startswith('[') or line.endswith(']'):
                     continue
 
                 try:
-                    paper = parse_func(json.loads(line.strip(',')))
+                    paper = parse_func(json.loads(line))
                     if paper.is_populated():
                         paper_map[paper.id] = paper
 

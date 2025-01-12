@@ -1,14 +1,12 @@
-import json
 import statistics
 import matplotlib.pyplot as plt
 from collections import defaultdict
 from typing import Dict
-from models.paper import Paper
+from src.utils.file_utils import read_parsed_papers_from_json
 
 
 class DatasetAnalyser:
     def analyse(self, file_path: str) -> None:
-        paper_count = 0
         paper_ids = set()
         duplicate_count = 0
         min_year = float("inf")
@@ -16,25 +14,20 @@ class DatasetAnalyser:
         citation_counts = []
         reference_counts = []
 
-        with open(file_path, 'r', encoding="utf-8") as file:
-            for line in file:
-                try:
-                    paper = Paper(**json.loads(line))
-                    paper_count += 1
+        papers = read_parsed_papers_from_json(file_path)
+        paper_count = len(papers)
 
-                    if paper.id in paper_ids:
-                        duplicate_count += 1
-                    paper_ids.add(paper.id)
+        for paper in papers:
+            if paper.id in paper_ids:
+                duplicate_count += 1
+            paper_ids.add(paper.id)
 
-                    year = paper.year
-                    min_year = min(min_year, year)
-                    max_year = max(max_year, year)
+            year = paper.year
+            min_year = min(min_year, year)
+            max_year = max(max_year, year)
 
-                    citation_counts.append(paper.citation_count)
-                    reference_counts.append(len(paper.references))
-
-                except json.JSONDecodeError as e:
-                    print(f"Error decoding JSON on line: {line} -> {e}")
+            citation_counts.append(paper.citation_count)
+            reference_counts.append(len(paper.references))
 
         total_citation_count = sum(citation_counts)
         total_reference_count = sum(reference_counts)
@@ -69,22 +62,16 @@ class DatasetAnalyser:
         print(f"Max reference count: {max_reference_count}")
 
     def analyse_test_set(self, file_path: str) -> None:
-        paper_count = 0
         ground_truth_reference_counts = []
         ground_truth_reference_frequencies = defaultdict(int)
 
-        with open(file_path, 'r', encoding="utf-8") as file:
-            for line in file:
-                try:
-                    paper = Paper(**json.loads(line))
-                    paper_count += 1
+        papers = read_parsed_papers_from_json(file_path)
+        paper_count = len(papers)
 
-                    num_references = len(paper.ground_truth_references)
-                    ground_truth_reference_counts.append(num_references)
-                    ground_truth_reference_frequencies[num_references] += 1
-
-                except json.JSONDecodeError as e:
-                    print(f"Error decoding JSON on line: {line} -> {e}")
+        for paper in papers:
+            num_references = len(paper.ground_truth_references)
+            ground_truth_reference_counts.append(num_references)
+            ground_truth_reference_frequencies[num_references] += 1
 
         total_ground_truth_count = sum(ground_truth_reference_counts)
         mean_ground_truth_count = total_ground_truth_count / paper_count
