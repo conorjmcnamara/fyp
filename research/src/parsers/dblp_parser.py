@@ -106,9 +106,9 @@ class DblpParser():
 
         indexed_abstract = paper_dict.get("indexed_abstract", {})
         abstract = [""] * indexed_abstract.get("IndexLength", 0)
-        for word, positions in indexed_abstract.get("InvertedIndex", {}).items():
+        for token, positions in indexed_abstract.get("InvertedIndex", {}).items():
             for position in positions:
-                abstract[position] = word
+                abstract[position] = token
         paper.abstract = " ".join(abstract)
 
         paper.venue = paper_dict.get("venue", {}).get("raw")

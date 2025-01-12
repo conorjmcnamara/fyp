@@ -42,6 +42,8 @@ def generate_embeddings(
 
 
 def save_embeddings(file_path: str, embeddings: np.ndarray, ids: List[str]):
+    embeddings = embeddings.astype(np.float32)
+
     # Normalize embeddings for cosine similarity and store in a FAISS index with inner product
     faiss.normalize_L2(embeddings)
     index = faiss.IndexFlatIP(embeddings.shape[1])
@@ -56,8 +58,8 @@ def save_embeddings(file_path: str, embeddings: np.ndarray, ids: List[str]):
 
 def generate_and_save_embeddings(
     input_file_path: str,
-    model_name: str,
-    output_file_path: str
+    output_file_path: str,
+    model_name: str
 ) -> None:
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     tokenizer = AutoTokenizer.from_pretrained(model_name)
