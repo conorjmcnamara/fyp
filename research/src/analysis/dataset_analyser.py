@@ -2,11 +2,11 @@ import statistics
 import matplotlib.pyplot as plt
 from collections import defaultdict
 from typing import Dict
-from src.utils.file_utils import read_parsed_papers_from_json
+from src.utils.file_utils import read_papers
 
 
 class DatasetAnalyser:
-    def analyse(self, file_path: str) -> None:
+    def analyse(self, json_path: str) -> None:
         paper_ids = set()
         duplicate_count = 0
         min_year = float("inf")
@@ -14,7 +14,7 @@ class DatasetAnalyser:
         citation_counts = []
         reference_counts = []
 
-        papers = read_parsed_papers_from_json(file_path)
+        papers = read_papers(json_path)
         paper_count = len(papers)
 
         for paper in papers:
@@ -44,7 +44,7 @@ class DatasetAnalyser:
         min_reference_count = min(reference_counts)
         max_reference_count = max(reference_counts)
 
-        print(f"\nDataset statistics for: {file_path}")
+        print(f"\nDataset statistics for: {json_path}")
         print(f"Num papers: {paper_count}")
         print(f"Num duplicates: {duplicate_count}")
         print(f"Year range: {min_year} - {max_year}")
@@ -61,11 +61,11 @@ class DatasetAnalyser:
         print(f"Min reference count: {min_reference_count}")
         print(f"Max reference count: {max_reference_count}")
 
-    def analyse_test_set(self, file_path: str) -> None:
+    def analyse_test_set(self, json_path: str) -> None:
         ground_truth_reference_counts = []
         ground_truth_reference_frequencies = defaultdict(int)
 
-        papers = read_parsed_papers_from_json(file_path)
+        papers = read_papers(json_path)
         paper_count = len(papers)
 
         for paper in papers:
@@ -79,7 +79,7 @@ class DatasetAnalyser:
         min_ground_truth_count = min(ground_truth_reference_counts)
         max_ground_truth_count = max(ground_truth_reference_counts)
 
-        print(f"\nTest dataset statistics for: {file_path}")
+        print(f"\nTest dataset statistics for: {json_path}")
         print(f"Num papers: {paper_count}")
         print(f"Total ground truth references: {total_ground_truth_count}")
         print(f"Mean ground truth references: {mean_ground_truth_count:.2f}")

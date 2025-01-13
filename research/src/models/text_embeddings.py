@@ -1,15 +1,44 @@
 import torch
-import faiss
 import numpy as np
-import os
-import pickle
 from torch.utils.data import DataLoader
 from transformers import AutoTokenizer, AutoModel
 from tqdm import tqdm
 from typing import Tuple, List
-from src.utils.file_utils import read_parsed_papers_from_json
+from src.utils.file_utils import read_papers, save_embeddings, save_ids
 from src.models.text_dataset import TextDataset
 from src.config.settings import BATCH_SIZE, NUM_WORKERS
+
+
+def generate_and_save_embeddings(
+    json_path: str,
+    index_path: str,
+    ids_path: str,
+    model_name: str
+) -> None:
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    tokenizer = AutoTokenizer.from_pretrained(model_name)
+    model = AutoModel.from_pretrained(model_name).to(device)
+
+    papers = read_papers(json_path)
+    dataset = TextDataset(
+        [paper.title for paper in papers],
+        [paper.abstract for paper in papers],
+        [paper.id for paper in papers],
+        tokenizer
+    )
+
+    data_loader = DataLoader(
+        dataset,
+        batch_size=BATCH_SIZE,
+        shuffle=False,
+        num_workers=NUM_WORKERS,
+        pin_memory=True
+    )
+
+    embeddings, ids = generate_embeddings(model, data_loader, device)
+    print(f"Saving {len(embeddings)} embeddings of size {embeddings.shape[1]}")
+    save_embeddings(index_path, embeddings)
+    save_ids(ids_path, ids)
 
 
 def generate_embeddings(
@@ -39,48 +68,3 @@ def generate_embeddings(
             ids.extend(paper_ids)
 
     return torch.cat(embeddings, dim=0).numpy(), ids
-
-
-def save_embeddings(file_path: str, embeddings: np.ndarray, ids: List[str]):
-    embeddings = embeddings.astype(np.float32)
-
-    # Normalize embeddings for cosine similarity and store in a FAISS index with inner product
-    faiss.normalize_L2(embeddings)
-    index = faiss.IndexFlatIP(embeddings.shape[1])
-    index.add(embeddings)
-    faiss.write_index(index, file_path)
-
-    base_name = os.path.splitext(file_path)[0]
-    ids_file_path = base_name + "_ids.pkl"
-    with open(ids_file_path, "wb") as file:
-        pickle.dump(ids, file)
-
-
-def generate_and_save_embeddings(
-    input_file_path: str,
-    output_file_path: str,
-    model_name: str
-) -> None:
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    tokenizer = AutoTokenizer.from_pretrained(model_name)
-    model = AutoModel.from_pretrained(model_name).to(device)
-
-    papers = read_parsed_papers_from_json(input_file_path)
-    dataset = TextDataset(
-        [paper.title for paper in papers],
-        [paper.abstract for paper in papers],
-        [paper.id for paper in papers],
-        tokenizer
-    )
-
-    data_loader = DataLoader(
-        dataset,
-        batch_size=BATCH_SIZE,
-        shuffle=False,
-        num_workers=NUM_WORKERS,
-        pin_memory=True
-    )
-
-    embeddings, ids = generate_embeddings(model, data_loader, device)
-    print(f"Saving {len(embeddings)} embeddings of size {embeddings.shape[1]}")
-    save_embeddings(output_file_path, embeddings, ids)
