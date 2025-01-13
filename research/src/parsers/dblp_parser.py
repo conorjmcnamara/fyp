@@ -2,7 +2,7 @@ import json
 from typing import Dict, Callable, Any
 from src.data_models.paper import Paper
 from src.parsers.dblp_txt_field import DblpTxtField
-from src.utils.file_utils import save_papers_to_json
+from src.utils.file_utils import save_papers
 from src.config.settings import (
     MIN_CITATION_COUNT_FILTER,
     MIN_REFERENCE_COUNT_FILTER,
@@ -11,11 +11,25 @@ from src.config.settings import (
 
 
 class DblpParser():
-    def _read_txt(self, file_path: str) -> Dict[str, Paper]:
+    def parse_and_transform(self, input_file_path: str, output_json_path: str) -> None:
+        if input_file_path.endswith(".txt"):
+            paper_map = self._read_txt(input_file_path)
+        elif "v10" in input_file_path:
+            paper_map = self._read_json(input_file_path, self._parse_v10_paper)
+        elif "v12" in input_file_path:
+            paper_map = self._read_json(input_file_path, self._parse_v12_paper)
+        else:
+            raise ValueError(f"Unsupported input file type: {input_file_path}")
+
+        paper_map = self._filter_papers(paper_map)
+        print(f"Saving {len(paper_map)} papers")
+        save_papers(output_json_path, list(paper_map.values()))
+
+    def _read_txt(self, txt_path: str) -> Dict[str, Paper]:
         paper_map = {}
         paper = Paper()
 
-        with open(file_path, 'r', encoding="utf-8") as file:
+        with open(txt_path, 'r', encoding="utf-8") as file:
             for line in file:
                 line = line.strip()
 
@@ -54,12 +68,12 @@ class DblpParser():
 
     def _read_json(
         self,
-        file_path: str,
+        json_path: str,
         parse_func: Callable[[Dict[str, Any]], Paper]
     ) -> Dict[str, Paper]:
         paper_map = {}
 
-        with open(file_path, 'r', encoding="utf-8") as file:
+        with open(json_path, 'r', encoding="utf-8") as file:
             for line in file:
                 line = line.strip().strip(',')
                 if not line or line.startswith('[') or line.endswith(']'):
@@ -115,20 +129,6 @@ class DblpParser():
         paper.references = paper_dict.get("references")
         return paper
 
-    def _remove_missing_references(self, paper_map: Dict[str, Paper]) -> None:
-        keys = set(paper_map.keys())
-        for paper in paper_map.values():
-            paper.references = [ref_id for ref_id in paper.references if ref_id in keys]
-
-    def _compute_citation_counts(self, paper_map: Dict[str, Paper]) -> None:
-        for paper in paper_map.values():
-            paper.citation_count = 0
-
-        for paper in paper_map.values():
-            for ref_id in paper.references:
-                if ref_id in paper_map:
-                    paper_map[ref_id].citation_count += 1
-
     def _filter_papers(self, paper_map: Dict[str, Paper]) -> Dict[str, Paper]:
         # Remove references to papers with missing metadata
         self._remove_missing_references(paper_map)
@@ -148,16 +148,16 @@ class DblpParser():
 
         return paper_map
 
-    def parse_and_transform(self, input_file_path: str, output_json_path: str) -> None:
-        if input_file_path.endswith(".txt"):
-            paper_map = self._read_txt(input_file_path)
-        elif "v10" in input_file_path:
-            paper_map = self._read_json(input_file_path, self._parse_v10_paper)
-        elif "v12" in input_file_path:
-            paper_map = self._read_json(input_file_path, self._parse_v12_paper)
-        else:
-            raise ValueError(f"Unsupported input file type: {input_file_path}")
+    def _remove_missing_references(self, paper_map: Dict[str, Paper]) -> None:
+        keys = set(paper_map.keys())
+        for paper in paper_map.values():
+            paper.references = [ref_id for ref_id in paper.references if ref_id in keys]
 
-        paper_map = self._filter_papers(paper_map)
-        print(f"Saving {len(paper_map)} papers")
-        save_papers_to_json(output_json_path, list(paper_map.values()))
+    def _compute_citation_counts(self, paper_map: Dict[str, Paper]) -> None:
+        for paper in paper_map.values():
+            paper.citation_count = 0
+
+        for paper in paper_map.values():
+            for ref_id in paper.references:
+                if ref_id in paper_map:
+                    paper_map[ref_id].citation_count += 1
