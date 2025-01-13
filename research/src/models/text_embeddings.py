@@ -82,5 +82,5 @@ def generate_and_save_embeddings(
     )
 
     embeddings, ids = generate_embeddings(model, data_loader, device)
-    print(f"Saving {len(embeddings)} embeddings")
+    print(f"Saving {len(embeddings)} embeddings of size {embeddings.shape[1]}")
     save_embeddings(output_file_path, embeddings, ids)

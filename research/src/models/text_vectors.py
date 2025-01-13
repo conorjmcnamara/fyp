@@ -3,7 +3,7 @@ import re
 from sklearn.feature_extraction.text import TfidfVectorizer
 from typing import List, Tuple
 from src.utils.file_utils import read_parsed_papers_from_json
-from src.config.settings import MIN_DOC_FREQ
+from src.config.settings import MAX_FEATURES, MIN_DOC_FREQ
 from src.data_models.paper import Paper
 from src.models.text_embeddings import save_embeddings
 
@@ -13,9 +13,7 @@ def normalize_text(text: str) -> str:
     normalized_text = re.sub(r"[^a-zA-Z\s]", ' ', text)
 
     # Remove extra spaces
-    normalized_text = re.sub(r"\s+", ' ', normalized_text).strip()
-
-    return normalized_text.lower()
+    return re.sub(r"\s+", ' ', normalized_text).strip()
 
 
 def preprocess_papers(papers: List[Paper]) -> List[Paper]:
@@ -46,6 +44,7 @@ def generate_and_save_vectors(
 
     # Fit a TF-IDF vectorizer on the training corpus
     vectorizer = TfidfVectorizer(
+        max_features=MAX_FEATURES,
         sublinear_tf=True,
         stop_words="english",
         min_df=MIN_DOC_FREQ,
@@ -56,11 +55,11 @@ def generate_and_save_vectors(
     print("Fitted vectorizer")
 
     train_vectors, train_ids = generate_vectors(train_papers, vectorizer)
-    print(f"Saving {len(train_vectors)} training vectors")
+    print(f"Saving {len(train_vectors)} training vectors of size {train_vectors.shape[1]}")
     save_embeddings(output_train_path, train_vectors, train_ids)
 
     test_papers = read_parsed_papers_from_json(input_test_path)
     test_papers = preprocess_papers(test_papers)
     test_vectors, test_ids = generate_vectors(test_papers, vectorizer)
-    print(f"Saving {len(test_vectors)} testing vectors")
+    print(f"Saving {len(test_vectors)} training vectors of size {test_vectors.shape[1]}")
     save_embeddings(output_test_path, test_vectors, test_ids)
