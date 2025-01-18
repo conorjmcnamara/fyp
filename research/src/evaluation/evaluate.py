@@ -43,12 +43,14 @@ def evaluate(
         _, indices = train_index.search(np.expand_dims(test_vector, axis=0), max_k)
         recommended_ids = [train_ids[idx] for idx in indices[0]]
 
-        # Rerank recommendations
-        if rerank_scores:
-            recommended_ids = rerank_recommendations(recommended_ids, rerank_scores)
-
         for k in k_vals:
-            precision, recall, ap = compute_metrics_at_k(recommended_ids, ground_truth, k)
+            top_k_recommendations = recommended_ids[:k]
+
+            # Rerank recommendations
+            if rerank_scores:
+                top_k_recommendations = rerank_recommendations(top_k_recommendations, rerank_scores)
+            
+            precision, recall, ap = compute_metrics(top_k_recommendations, ground_truth)
             precision_at_k[k].append(precision)
             recall_at_k[k].append(recall)
             avg_precision_at_k[k].append(ap)
@@ -74,17 +76,15 @@ def rerank_recommendations(
     return reranked_recommendations
 
 
-def compute_metrics_at_k(
+def compute_metrics(
     recommended_ids: List[str],
-    ground_truth: List[str],
-    k: int
+    ground_truth: List[str]
 ) -> Tuple[float, float, float]:
-    recommended_at_k = recommended_ids[:k]
-    recommended_set = set(recommended_at_k)
+    recommended_set = set(recommended_ids)
     relevant_set = set(ground_truth)
 
     # Precision at K
-    precision = len(recommended_set & relevant_set) / k
+    precision = len(recommended_set & relevant_set) / len(recommended_ids)
 
     # Recall at K
     recall = len(recommended_set & relevant_set) / len(relevant_set)
@@ -92,7 +92,7 @@ def compute_metrics_at_k(
     # Average Precision at K
     ap = 0
     relevant_count = 0
-    for i, rec_id in enumerate(recommended_at_k):
+    for i, rec_id in enumerate(recommended_ids):
         if rec_id in relevant_set:
             relevant_count += 1
             ap += relevant_count / (i + 1)
