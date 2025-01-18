@@ -1,6 +1,6 @@
 import numpy as np
 from typing import List, Tuple
-from src.utils.file_utils import read_embeddings, read_ids, read_papers, save_results
+from src.utils.file_utils import read_embeddings, read_obj, read_papers, save_results
 
 
 def evaluate(
@@ -14,8 +14,8 @@ def evaluate(
 ) -> None:
     train_index = read_embeddings(train_index_path)
     test_index = read_embeddings(test_index_path)
-    train_ids = read_ids(train_ids_path)
-    test_ids = read_ids(test_ids_path)
+    train_ids: List[str] = read_obj(train_ids_path)
+    test_ids: List[str] = read_obj(test_ids_path)
 
     test_papers = read_papers(test_json_path)
     ground_truth_references_map = {
@@ -70,15 +70,13 @@ def compute_metrics_at_k(
     # Recall at K
     recall = len(recommended_set & relevant_set) / len(relevant_set)
 
-    # Average Precision
+    # Average Precision at K
     ap = 0
     relevant_count = 0
-
     for i, rec_id in enumerate(recommended_at_k):
         if rec_id in relevant_set:
             relevant_count += 1
             ap += relevant_count / (i + 1)
-
     ap /= len(relevant_set)
 
     return precision, recall, ap

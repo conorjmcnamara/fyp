@@ -2,7 +2,7 @@ import numpy as np
 import re
 from sklearn.feature_extraction.text import TfidfVectorizer
 from typing import List, Tuple
-from src.utils.file_utils import read_papers, save_embeddings, save_ids
+from src.utils.file_utils import read_papers, save_embeddings, save_obj
 from src.config.settings import MIN_DOC_FREQ
 from src.data_models.paper import Paper
 
@@ -32,14 +32,14 @@ def generate_and_save_vectors(
     train_vectors, train_ids = generate_vectors(train_papers, vectorizer)
     print(f"Saving {len(train_vectors)} training vectors of size {train_vectors.shape[1]}")
     save_embeddings(train_index_path, train_vectors)
-    save_ids(train_ids_path, train_ids)
+    save_obj(train_ids_path, train_ids)
 
     test_papers = read_papers(test_json_path)
     test_papers = preprocess_papers(test_papers)
     test_vectors, test_ids = generate_vectors(test_papers, vectorizer)
     print(f"Saving {len(test_vectors)} training vectors of size {test_vectors.shape[1]}")
     save_embeddings(test_index_path, test_vectors)
-    save_ids(test_ids_path, test_ids)
+    save_obj(test_ids_path, test_ids)
 
 
 def preprocess_papers(papers: List[Paper]) -> List[Paper]:

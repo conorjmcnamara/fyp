@@ -3,18 +3,18 @@ import faiss
 import numpy as np
 import pickle
 import pandas as pd
-from typing import List, Dict
+from typing import List, Dict, Any
 from src.data_models.paper import Paper
 from src.config.settings import TEST_SET_YEAR
 
 
-def combine_json_files(input_json_paths: List[str], output_json_path: str) -> None:
-    with open(output_json_path, 'w', encoding="utf-8") as outfile:
+def combine_json_files(input_json_paths: List[str], combined_json_path: str) -> None:
+    with open(combined_json_path, 'w', encoding="utf-8") as outfile:
         outfile.write("[\n")
         is_first_entry = True
 
         for input_json_path in input_json_paths:
-            with open(input_json_path, 'r', encoding='utf-8') as file:
+            with open(input_json_path, 'r', encoding="utf-8") as file:
                 for line in file:
                     line = line.strip()
                     if not line or line.startswith('[') or line.endswith(']'):
@@ -55,8 +55,8 @@ def read_papers(json_path: str) -> List[Paper]:
     return papers
 
 
-def split_dataset(input_json_path: str, train_json_path: str, test_json_path: str) -> None:
-    papers = read_papers(input_json_path)
+def split_dataset(dataset_json_path: str, train_json_path: str, test_json_path: str) -> None:
+    papers = read_papers(dataset_json_path)
     train_papers = []
     test_papers = []
 
@@ -90,17 +90,17 @@ def save_embeddings(index_path: str, embeddings: np.ndarray) -> None:
     faiss.write_index(index, index_path)
 
 
-def save_ids(ids_path: str, ids: List[str]) -> None:
-    with open(ids_path, "wb") as file:
-        pickle.dump(ids, file)
-
-
 def read_embeddings(index_path: str) -> faiss.Index:
     return faiss.read_index(index_path)
 
 
-def read_ids(ids_path: str) -> List[str]:
-    with open(ids_path, "rb") as file:
+def save_obj(path: str, obj: Any) -> None:
+    with open(path, "wb") as file:
+        pickle.dump(obj, file)
+
+
+def read_obj(path: str) -> Any:
+    with open(path, "rb") as file:
         return pickle.load(file)
 
 

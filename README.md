@@ -6,6 +6,7 @@ Set `BACKEND_PORT` and `FRONTEND_PORT` in `/app/.env` to define the ports for th
 ### Startup
 ```sh
 cd app
+
 ./scripts/startup.sh
 ```
 
@@ -14,26 +15,12 @@ Once started, the backend API and web application will run in Docker containers 
 ### Shutdown
 ```sh
 cd app
+
 ./scripts/shutdown.sh
 ```
 
-### Linting
-#### Backend
-```sh
-cd app/backend
-
-flake8 .
-```
-
-#### Frontend
-```sh
-cd app/frontend
-
-npm run lint
-```
-
-### Testing
-#### Backend
+## Testing
+### Backend
 ```sh
 cd app/backend
 
@@ -42,7 +29,7 @@ pytest
 
 After running the tests, a coverage report will be generated and saved at `/app/backend/coverage.xml`.
 
-#### Frontend
+### Frontend
 ```sh
 cd app/frontend
 
@@ -50,3 +37,18 @@ npm run test
 ```
 
 After running the tests, a coverage report will be generated and saved at `/app/frontend/coverage/clover.xml`.
+
+## Linting
+### Backend
+```sh
+cd app/backend
+
+flake8 .
+```
+
+### Frontend
+```sh
+cd app/frontend
+
+npm run lint
+```
