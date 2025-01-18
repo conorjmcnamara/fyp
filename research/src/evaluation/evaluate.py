@@ -1,5 +1,5 @@
 import numpy as np
-from typing import List, Tuple
+from typing import List, Tuple, Dict
 from src.utils.file_utils import read_embeddings, read_obj, read_papers, save_results
 
 
@@ -10,14 +10,19 @@ def evaluate(
     test_ids_path: str,
     test_json_path: str,
     k_vals: List[int],
-    results_path: str
+    results_path: str,
+    rerank_scores_path: str = None
 ) -> None:
     train_index = read_embeddings(train_index_path)
     test_index = read_embeddings(test_index_path)
     train_ids: List[str] = read_obj(train_ids_path)
     test_ids: List[str] = read_obj(test_ids_path)
-
     test_papers = read_papers(test_json_path)
+
+    rerank_scores = None
+    if rerank_scores_path:
+        rerank_scores = read_obj(rerank_scores_path)
+
     ground_truth_references_map = {
         paper.id: paper.ground_truth_references for paper in test_papers
     }
@@ -38,6 +43,10 @@ def evaluate(
         _, indices = train_index.search(np.expand_dims(test_vector, axis=0), max_k)
         recommended_ids = [train_ids[idx] for idx in indices[0]]
 
+        # Rerank recommendations
+        if rerank_scores:
+            recommended_ids = rerank_recommendations(recommended_ids, rerank_scores)
+
         for k in k_vals:
             precision, recall, ap = compute_metrics_at_k(recommended_ids, ground_truth, k)
             precision_at_k[k].append(precision)
@@ -53,6 +62,16 @@ def evaluate(
 
     print("Saving results")
     save_results(results_path, results)
+
+
+def rerank_recommendations(
+    recommended_ids: List[str],
+    rerank_scores: Dict[str, float]
+) -> List[str]:
+    reranked_recommendations = sorted(
+        recommended_ids, key=lambda id: rerank_scores.get(id, 0), reverse=True
+    )
+    return reranked_recommendations
 
 
 def compute_metrics_at_k(
