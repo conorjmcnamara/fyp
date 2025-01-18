@@ -49,7 +49,7 @@ def evaluate(
             # Rerank recommendations
             if rerank_scores:
                 top_k_recommendations = rerank_recommendations(top_k_recommendations, rerank_scores)
-            
+
             precision, recall, ap = compute_metrics(top_k_recommendations, ground_truth)
             precision_at_k[k].append(precision)
             recall_at_k[k].append(recall)
