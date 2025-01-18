@@ -21,7 +21,7 @@ def evaluate(
 
     rerank_scores = None
     if rerank_scores_path:
-        rerank_scores = read_obj(rerank_scores_path)
+        rerank_scores: Dict[str, float] = read_obj(rerank_scores_path)
 
     ground_truth_references_map = {
         paper.id: paper.ground_truth_references for paper in test_papers
