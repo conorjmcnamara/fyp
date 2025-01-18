@@ -26,5 +26,5 @@ def generate_graph(papers: List[Paper]) -> nx.DiGraph:
         for ref_id in references:
             if ref_id in ids:
                 graph.add_edge(paper_id, ref_id)
-    
+
     return graph
