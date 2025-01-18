@@ -85,7 +85,7 @@ class DblpParser():
                         paper_map[paper.id] = paper
 
                 except json.JSONDecodeError as e:
-                    print(f"Error decoding JSON on line: {line.strip()} -> {e}")
+                    print(f"Error decoding JSON on line: {line} -> {e}")
 
         return paper_map
 

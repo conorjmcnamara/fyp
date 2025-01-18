@@ -4,7 +4,7 @@ from torch.utils.data import DataLoader
 from transformers import AutoTokenizer, AutoModel
 from tqdm import tqdm
 from typing import Tuple, List
-from src.utils.file_utils import read_papers, save_embeddings, save_ids
+from src.utils.file_utils import read_papers, save_embeddings, save_obj
 from src.models.text_dataset import TextDataset
 from src.config.settings import BATCH_SIZE, NUM_WORKERS
 
@@ -38,7 +38,7 @@ def generate_and_save_embeddings(
     embeddings, ids = generate_embeddings(model, data_loader, device)
     print(f"Saving {len(embeddings)} embeddings of size {embeddings.shape[1]}")
     save_embeddings(index_path, embeddings)
-    save_ids(ids_path, ids)
+    save_obj(ids_path, ids)
 
 
 def generate_embeddings(

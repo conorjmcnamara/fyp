@@ -1,6 +1,7 @@
 faiss-cpu
 faiss-gpu
 matplotlib
+networkx
 numpy>=1.25.0,<2.0
 pandas
 scikit-learn
