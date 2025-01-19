@@ -1,7 +1,7 @@
 faiss-cpu
 matplotlib
 networkx
-numpy>=1.25.0,<2.0
+numpy>=1.25,<2.0
 pandas
 scikit-learn
 torch

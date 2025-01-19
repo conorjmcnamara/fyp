@@ -12,7 +12,6 @@ class Paper:
     venue: str = ""
     references: List[str] = field(default_factory=list)
     citation_count: int = 0
-    ground_truth_references: List[str] = field(default_factory=list)
 
     def is_populated(self) -> bool:
         return (

@@ -6,33 +6,30 @@ from src.utils.file_utils import read_embeddings, read_obj, read_papers, save_re
 def evaluate(
     train_index_path: str,
     test_index_path: str,
+    test_papers_path: str,
     train_ids_path: str,
     test_ids_path: str,
-    test_json_path: str,
     k_vals: List[int],
     results_path: str,
     rerank_scores_path: str = None
 ) -> None:
     train_index = read_embeddings(train_index_path)
     test_index = read_embeddings(test_index_path)
+    test_papers = read_papers(test_papers_path)
     train_ids: List[str] = read_obj(train_ids_path)
     test_ids: List[str] = read_obj(test_ids_path)
-    test_papers = read_papers(test_json_path)
 
     rerank_scores = None
     if rerank_scores_path:
         rerank_scores: Dict[str, float] = read_obj(rerank_scores_path)
 
-    ground_truth_references_map = {
-        paper.id: paper.ground_truth_references for paper in test_papers
-    }
-
+    ground_truth_references = {paper.id: paper.references for paper in test_papers}
     precision_at_k = {k: [] for k in k_vals}
     recall_at_k = {k: [] for k in k_vals}
     avg_precision_at_k = {k: [] for k in k_vals}
 
     for i, test_id in enumerate(test_ids):
-        ground_truth = ground_truth_references_map[test_id]
+        ground_truth = ground_truth_references[test_id]
         if not ground_truth:
             continue
 
@@ -91,11 +88,11 @@ def compute_metrics(
 
     # Average Precision at K
     ap = 0
-    relevant_count = 0
+    num_relevant = 0
     for i, rec_id in enumerate(recommended_ids):
         if rec_id in relevant_set:
-            relevant_count += 1
-            ap += relevant_count / (i + 1)
+            num_relevant += 1
+            ap += num_relevant / (i + 1)
     ap /= len(relevant_set)
 
     return precision, recall, ap

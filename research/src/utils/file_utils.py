@@ -5,6 +5,7 @@ import pickle
 import pandas as pd
 from typing import List, Dict, Any
 from src.data_models.paper import Paper
+from src.utils.preprocess_utils import remove_missing_references, compute_citation_counts
 from src.config.settings import TEST_SET_YEAR
 
 
@@ -29,8 +30,8 @@ def combine_json_files(input_json_paths: List[str], combined_json_path: str) -> 
         outfile.write("\n]")
 
 
-def save_papers(json_path: str, papers: List[Paper]) -> None:
-    with open(json_path, 'w', encoding="utf-8") as file:
+def save_papers(papers_path: str, papers: List[Paper]) -> None:
+    with open(papers_path, 'w', encoding="utf-8") as file:
         lines = ["[\n"]
         lines.extend(f"{json.dumps(paper.__dict__)},\n" for paper in papers[:-1])
         lines.append(json.dumps(papers[-1].__dict__))
@@ -38,10 +39,10 @@ def save_papers(json_path: str, papers: List[Paper]) -> None:
         file.writelines(lines)
 
 
-def read_papers(json_path: str) -> List[Paper]:
+def read_papers(papers_path: str) -> List[Paper]:
     papers = []
 
-    with open(json_path, 'r', encoding="utf-8") as file:
+    with open(papers_path, 'r', encoding="utf-8") as file:
         for line in file:
             line = line.strip().strip(',')
             if not line or line.startswith('[') or line.endswith(']'):
@@ -55,10 +56,10 @@ def read_papers(json_path: str) -> List[Paper]:
     return papers
 
 
-def split_dataset(dataset_json_path: str, train_json_path: str, test_json_path: str) -> None:
-    papers = read_papers(dataset_json_path)
-    train_papers = []
-    test_papers = []
+def split_dataset(dataset_path: str, train_papers_path: str, test_papers_path: str) -> None:
+    papers = read_papers(dataset_path)
+    train_papers: List[Paper] = []
+    test_papers: List[Paper] = []
 
     for paper in papers:
         if paper.year >= TEST_SET_YEAR:
@@ -66,18 +67,18 @@ def split_dataset(dataset_json_path: str, train_json_path: str, test_json_path: 
         else:
             train_papers.append(paper)
 
+    remove_missing_references(train_papers)
+    compute_citation_counts(train_papers)
+
     train_ids = set(train_paper.id for train_paper in train_papers)
     for test_paper in test_papers:
-        test_paper.ground_truth_references = [
-            ref_id for ref_id in test_paper.references if ref_id in train_ids
-        ]
+        test_paper.references = [ref_id for ref_id in test_paper.references if ref_id in train_ids]
 
-    test_papers = [
-        test_paper for test_paper in test_papers if len(test_paper.ground_truth_references) > 0
-    ]
+    test_papers = [test_paper for test_paper in test_papers if len(test_paper.references) > 0]
+    compute_citation_counts(test_papers)
 
-    save_papers(train_json_path, train_papers)
-    save_papers(test_json_path, test_papers)
+    save_papers(train_papers_path, train_papers)
+    save_papers(test_papers_path, test_papers)
 
 
 def save_embeddings(index_path: str, embeddings: np.ndarray) -> None:
