@@ -10,7 +10,7 @@ from src.config.settings import BATCH_SIZE, NUM_WORKERS
 
 
 def generate_and_save_embeddings(
-    json_path: str,
+    papers_path: str,
     index_path: str,
     ids_path: str,
     model_name: str
@@ -19,7 +19,7 @@ def generate_and_save_embeddings(
     tokenizer = AutoTokenizer.from_pretrained(model_name)
     model = AutoModel.from_pretrained(model_name).to(device)
 
-    papers = read_papers(json_path)
+    papers = read_papers(papers_path)
     dataset = TextDataset(
         [paper.title for paper in papers],
         [paper.abstract for paper in papers],
@@ -64,7 +64,6 @@ def generate_embeddings(
             batch_embeddings = last_hidden_state.mean(dim=1)
             embeddings.append(batch_embeddings.cpu())
 
-            paper_ids = batch["id"]
-            ids.extend(paper_ids)
+            ids.extend(batch["id"])
 
     return torch.cat(embeddings, dim=0).numpy(), ids
