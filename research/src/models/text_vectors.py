@@ -8,17 +8,18 @@ from src.data_models.paper import Paper
 
 
 def generate_and_save_vectors(
-    train_papers_path: str,
-    test_papers_path: str,
     train_index_path: str,
     test_index_path: str,
     train_ids_path: str,
-    test_ids_path: str
+    test_ids_path: str,
+    train_papers_path: str,
+    test_papers_path: str
 ) -> None:
+    # Process training papers
     train_papers = read_papers(train_papers_path)
     train_papers = preprocess_papers(train_papers)
 
-    # Fit a TF-IDF vectorizer on the training corpus
+    # Fit TF-IDF vectorizer on the training corpus
     vectorizer = TfidfVectorizer(
         sublinear_tf=True,
         stop_words="english",
@@ -34,10 +35,11 @@ def generate_and_save_vectors(
     save_embeddings(train_index_path, train_vectors)
     save_obj(train_ids_path, train_ids)
 
+    # Process testing papers
     test_papers = read_papers(test_papers_path)
     test_papers = preprocess_papers(test_papers)
     test_vectors, test_ids = generate_vectors(test_papers, vectorizer)
-    print(f"Saving {len(test_vectors)} training vectors of size {test_vectors.shape[1]}")
+    print(f"Saving {len(test_vectors)} testing vectors of size {test_vectors.shape[1]}")
     save_embeddings(test_index_path, test_vectors)
     save_obj(test_ids_path, test_ids)
 
