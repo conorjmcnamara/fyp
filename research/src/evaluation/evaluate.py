@@ -4,26 +4,27 @@ from src.utils.file_utils import read_embeddings, read_obj, read_papers, save_re
 
 
 def evaluate(
+    results_path: str,
     train_index_path: str,
     test_index_path: str,
-    test_papers_path: str,
     train_ids_path: str,
     test_ids_path: str,
+    test_papers_path: str,
     k_vals: List[int],
-    results_path: str,
     rerank_scores_path: str = None
 ) -> None:
     train_index = read_embeddings(train_index_path)
     test_index = read_embeddings(test_index_path)
-    test_papers = read_papers(test_papers_path)
     train_ids: List[str] = read_obj(train_ids_path)
     test_ids: List[str] = read_obj(test_ids_path)
+
+    test_papers = read_papers(test_papers_path)
+    ground_truth_references = {paper.id: paper.references for paper in test_papers}
 
     rerank_scores = None
     if rerank_scores_path:
         rerank_scores: Dict[str, float] = read_obj(rerank_scores_path)
 
-    ground_truth_references = {paper.id: paper.references for paper in test_papers}
     precision_at_k = {k: [] for k in k_vals}
     recall_at_k = {k: [] for k in k_vals}
     avg_precision_at_k = {k: [] for k in k_vals}
@@ -36,9 +37,9 @@ def evaluate(
         test_vector = test_index.reconstruct(i)
         max_k = max(k_vals)
 
-        # Retrieve top-N neighbours (max K)
+        # Retrieve top-N training neighbours
         _, indices = train_index.search(np.expand_dims(test_vector, axis=0), max_k)
-        recommended_ids = [train_ids[idx] for idx in indices[0]]
+        recommended_ids = [train_ids[j] for j in indices[0]]
 
         for k in k_vals:
             top_k_recommendations = recommended_ids[:k]
@@ -68,7 +69,7 @@ def rerank_recommendations(
     rerank_scores: Dict[str, float]
 ) -> List[str]:
     reranked_recommendations = sorted(
-        recommended_ids, key=lambda id: rerank_scores.get(id, 0), reverse=True
+        recommended_ids, key=lambda id: rerank_scores[id], reverse=True
     )
     return reranked_recommendations
 

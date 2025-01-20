@@ -10,9 +10,9 @@ from src.config.settings import BATCH_SIZE, NUM_WORKERS
 
 
 def generate_and_save_embeddings(
-    papers_path: str,
     index_path: str,
     ids_path: str,
+    papers_path: str,
     model_name: str
 ) -> None:
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
