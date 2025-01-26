@@ -1,7 +1,7 @@
 import networkx as nx
 from typing import List
-from src.utils.file_utils import read_papers, save_obj
 from src.data_models.paper import Paper
+from src.utils.file_utils import read_papers, save_obj
 
 
 def generate_and_save_graph(graph_path: str, train_papers_path: str) -> None:

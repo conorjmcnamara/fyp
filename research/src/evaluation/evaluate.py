@@ -35,10 +35,9 @@ def evaluate(
             continue
 
         test_vector = test_index.reconstruct(i)
-        max_k = max(k_vals)
 
-        # Retrieve top-N training neighbours
-        _, indices = train_index.search(np.expand_dims(test_vector, axis=0), max_k)
+        # Retrieve top-N training neighbours (max K)
+        _, indices = train_index.search(np.expand_dims(test_vector, axis=0), max(k_vals))
         recommended_ids = [train_ids[j] for j in indices[0]]
 
         for k in k_vals:
