@@ -37,5 +37,7 @@ def align_embeddings(
         raise ValueError("IDs in 'aligned_ids' and 'to_align_ids' do not match.")
 
     to_align_id_to_idx = {to_align_ids[i]: i for i in range(len(to_align_ids))}
-    aligned_b = np.array([to_align_embeddings[to_align_id_to_idx[id]] for id in aligned_ids])
-    return aligned_b, aligned_ids
+    aligned_embeddings = np.array(
+        [to_align_embeddings[to_align_id_to_idx[id]] for id in aligned_ids]
+    )
+    return aligned_embeddings, aligned_ids
