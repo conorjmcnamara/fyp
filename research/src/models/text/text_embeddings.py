@@ -1,24 +1,37 @@
 import torch
 import numpy as np
-from torch.utils.data import DataLoader
 from transformers import AutoTokenizer, AutoModel
+from adapters import AutoAdapterModel
+from torch.utils.data import DataLoader
 from tqdm import tqdm
-from typing import Tuple, List
+from typing import Union, Dict, Tuple, List
+from src.models.text.text_dataset import TextDataset
 from src.utils.file_utils import read_papers, save_embeddings, save_obj
-from src.models.text_dataset import TextDataset
 from src.config.settings import BATCH_SIZE, NUM_WORKERS
 
 
-def generate_and_save_embeddings(
+def generate_and_save_text_embeddings(
     index_path: str,
     ids_path: str,
     papers_path: str,
-    model_name: str
+    model_name: str,
+    adapter_config: Union[Dict[str, str], None] = None
 ) -> None:
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    tokenizer = AutoTokenizer.from_pretrained(model_name)
-    model = AutoModel.from_pretrained(model_name).to(device)
+    if adapter_config:
+        model = AutoAdapterModel.from_pretrained(model_name)
+        model.load_adapter(
+            model_name,
+            source=adapter_config.get("source"),
+            load_as=adapter_config.get("load_as"),
+            set_active=True
+        )
+    else:
+        model = AutoModel.from_pretrained(model_name)
 
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    model = model.to(device)
+
+    tokenizer = AutoTokenizer.from_pretrained(model_name)
     papers = read_papers(papers_path)
     dataset = TextDataset(
         [paper.title for paper in papers],
@@ -35,13 +48,13 @@ def generate_and_save_embeddings(
         pin_memory=True
     )
 
-    embeddings, ids = generate_embeddings(model, data_loader, device)
-    print(f"Saving {len(embeddings)} embeddings of size {embeddings.shape[1]}")
+    embeddings, ids = generate_text_embeddings(model, data_loader, device)
+    print(f"Saving {len(embeddings)} embeddings of dim {embeddings.shape[1]}")
     save_embeddings(index_path, embeddings)
     save_obj(ids_path, ids)
 
 
-def generate_embeddings(
+def generate_text_embeddings(
     model: torch.nn.Module,
     data_loader: DataLoader,
     device: torch.device
