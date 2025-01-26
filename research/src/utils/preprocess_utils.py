@@ -29,13 +29,13 @@ def extract_embeddings_from_index(index: faiss.Index) -> np.ndarray:
 
 
 def align_embeddings(
-    a_ids: List[str],
-    b: np.ndarray,
-    b_ids: List[str]
+    aligned_ids: List[str],
+    to_align_embeddings: np.ndarray,
+    to_align_ids: List[str]
 ) -> Tuple[np.ndarray, List[str]]:
-    if sorted(a_ids) != sorted(b_ids):
-        raise ValueError("IDs in 'a' and 'b' do not match.")
+    if sorted(aligned_ids) != sorted(to_align_ids):
+        raise ValueError("IDs in 'aligned_ids' and 'to_align_ids' do not match.")
 
-    b_id_to_idx = {b_ids[i]: i for i in range(len(b_ids))}
-    aligned_b = np.array([b[b_id_to_idx[id]] for id in a_ids])
-    return aligned_b, a_ids
+    to_align_id_to_idx = {to_align_ids[i]: i for i in range(len(to_align_ids))}
+    aligned_b = np.array([to_align_embeddings[to_align_id_to_idx[id]] for id in aligned_ids])
+    return aligned_b, aligned_ids
