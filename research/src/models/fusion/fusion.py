@@ -1,9 +1,18 @@
 import numpy as np
+import torch
 from sklearn.cross_decomposition import CCA
-from typing import Callable, List
+from mvlearn.embed import DCCA
+from typing import Union, Callable, List
 from src.utils.file_utils import read_embeddings, save_embeddings, read_obj, save_obj
 from src.utils.preprocess_utils import extract_embeddings_from_index, align_embeddings
-from src.config.settings import CCA_DIM
+from src.config.settings import (
+    CCA_DIM,
+    DCCA_TEXT_HIDDEN_LAYERS,
+    DCCA_NODE_HIDDEN_LAYERS,
+    DCCA_EPOCHS
+)
+
+FusionModelType = Union[CCA, DCCA]
 
 
 def train_fusion_model(
@@ -40,6 +49,24 @@ def train_cca(cca_path: str, text_embeddings: np.ndarray, node_embeddings: np.nd
     save_obj(cca_path, cca)
 
 
+def train_dcca(dcca_path: str, text_embeddings: np.ndarray, node_embeddings: np.ndarray) -> None:
+    # Fit DCCA on the training set, learning text and node projection deep neural networks
+    dcca = DCCA(
+        input_size1=text_embeddings.shape[1],
+        input_size2=node_embeddings.shape[1],
+        n_components=CCA_DIM,
+        layer_sizes1=DCCA_TEXT_HIDDEN_LAYERS,
+        layer_sizes2=DCCA_NODE_HIDDEN_LAYERS,
+        device=torch.device("cuda" if torch.cuda.is_available() else "cpu"),
+        epoch_num=DCCA_EPOCHS,
+        print_train_log_info=True
+    )
+    dcca.fit([text_embeddings, node_embeddings])
+
+    print("Saving DCCA")
+    save_obj(dcca_path, dcca)
+
+
 def project_embeddings(
     projected_text_index_path: str,
     projected_text_ids_path: str,
@@ -51,7 +78,7 @@ def project_embeddings(
     node_index_path: str,
     node_ids_path: str
 ) -> None:
-    fusion_model: CCA = read_obj(fusion_model_path)
+    fusion_model: FusionModelType = read_obj(fusion_model_path)
     text_index = read_embeddings(text_index_path)
     text_ids: List[str] = read_obj(text_ids_path)
     node_index = read_embeddings(node_index_path)

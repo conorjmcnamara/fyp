@@ -1,9 +1,9 @@
 # Content-Based Citation Recommendation with Bibliographic Network Awareness
 ## Running the Research
-`research/notebooks` contains the entrypoints for all experiments.
+The Jupyter notebooks in `research/notebooks` contain the entrypoints for all experiments.
 
 ### Installation
-Each Jupyter notebook contains necessary dependency installation commands.
+Each notebook contains dependency installation commands.
 
 ```sh
 cd research/requirements
