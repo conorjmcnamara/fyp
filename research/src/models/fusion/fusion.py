@@ -1,18 +1,16 @@
 import numpy as np
 import torch
-from sklearn.cross_decomposition import CCA
-from mvlearn.embed import DCCA
-from typing import Union, Callable, List
+from mvlearn.embed import CCA, DCCA
+from typing import Callable, List, Union
 from src.utils.file_utils import read_embeddings, save_embeddings, read_obj, save_obj
 from src.utils.preprocess_utils import extract_embeddings_from_index, align_embeddings
 from src.config.settings import (
     CCA_DIM,
     DCCA_TEXT_HIDDEN_LAYERS,
     DCCA_NODE_HIDDEN_LAYERS,
-    DCCA_EPOCHS
+    DCCA_EPOCHS,
+    DCCA_BATCH_SIZE
 )
-
-FusionModelType = Union[CCA, DCCA]
 
 
 def train_fusion_model(
@@ -36,14 +34,13 @@ def train_fusion_model(
         node_embeddings,
         node_ids
     )
-
     fusion_func(fusion_model_path, text_embeddings, aligned_node_embeddings)
 
 
 def train_cca(cca_path: str, text_embeddings: np.ndarray, node_embeddings: np.ndarray) -> None:
     # Fit CCA on the training set, learning text and node projection matrices
     cca = CCA(n_components=CCA_DIM)
-    cca.fit(text_embeddings, node_embeddings)
+    cca.fit([text_embeddings, node_embeddings])
 
     print("Saving CCA")
     save_obj(cca_path, cca)
@@ -59,6 +56,7 @@ def train_dcca(dcca_path: str, text_embeddings: np.ndarray, node_embeddings: np.
         layer_sizes2=DCCA_NODE_HIDDEN_LAYERS,
         device=torch.device("cuda" if torch.cuda.is_available() else "cpu"),
         epoch_num=DCCA_EPOCHS,
+        batch_size=DCCA_BATCH_SIZE,
         print_train_log_info=True
     )
     dcca.fit([text_embeddings, node_embeddings])
@@ -78,7 +76,7 @@ def project_embeddings(
     node_index_path: str,
     node_ids_path: str
 ) -> None:
-    fusion_model: FusionModelType = read_obj(fusion_model_path)
+    fusion_model: Union[CCA, DCCA] = read_obj(fusion_model_path)
     text_index = read_embeddings(text_index_path)
     text_ids: List[str] = read_obj(text_ids_path)
     node_index = read_embeddings(node_index_path)
@@ -88,7 +86,8 @@ def project_embeddings(
     node_embeddings = extract_embeddings_from_index(node_index)
 
     # Project text and node embeddings into the shared space
-    text_projections, node_projections = fusion_model.transform(text_embeddings, node_embeddings)
+    projections = fusion_model.transform([text_embeddings, node_embeddings])
+    text_projections, node_projections = projections
 
     print(
         f"Saving {len(text_projections)} projected text embeddings of dim " +

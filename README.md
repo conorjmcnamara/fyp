@@ -37,7 +37,7 @@ npm install
 ```
 
 ### Docker
-Define the ports for the backend API and web application by setting `BACKEND_PORT` and `FRONTEND_PORT` in `app/.env`, defaulting to 8000 and 3000, respectively.
+Define ports for the backend API and web application by setting `BACKEND_PORT` and `FRONTEND_PORT` in `app/.env`, defaulting to 8000 and 3000, respectively.
 
 #### Startup
 ```sh

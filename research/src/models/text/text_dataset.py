@@ -1,7 +1,6 @@
 from torch.utils.data import Dataset
 from transformers import PreTrainedTokenizer
 from typing import List
-from src.config.settings import BERT_MAX_TOKENS
 
 
 class TextDataset(Dataset):
@@ -10,14 +9,12 @@ class TextDataset(Dataset):
         titles: List[str],
         abstracts: List[str],
         ids: List[str],
-        tokenizer: PreTrainedTokenizer,
-        max_len: int = BERT_MAX_TOKENS
+        tokenizer: PreTrainedTokenizer
     ):
         self.titles = titles
         self.abstracts = abstracts
         self.ids = ids
         self.tokenizer = tokenizer
-        self.max_len = max_len
 
     def __len__(self) -> int:
         return len(self.titles)
