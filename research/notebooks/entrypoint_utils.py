@@ -171,11 +171,11 @@ def run_train_fusion_model(
             curr_dir,
             f"data/embeddings/{dataset}_{fusion_model}_{text_model}_{node_model}.pkl"
         ),
+        fusion_func,
         os.path.join(curr_dir, f"data/embeddings/{dataset}_train_{text_model}.faiss"),
         os.path.join(curr_dir, f"data/embeddings/{dataset}_train_{text_model}_ids.pkl"),
         os.path.join(curr_dir, f"data/embeddings/{dataset}_train_{node_model}.faiss"),
-        os.path.join(curr_dir, f"data/embeddings/{dataset}_train_{node_model}_ids.pkl"),
-        fusion_func
+        os.path.join(curr_dir, f"data/embeddings/{dataset}_train_{node_model}_ids.pkl")
     )
 
 
@@ -257,6 +257,7 @@ def run_fuse_embeddings(
                 f"data/embeddings/{dataset}_{split}_{fusion_model}_{text_model}_{node_model}_ids" +
                 ".pkl"
             ),
+            fusion_func,
             os.path.join(curr_dir, f"data/embeddings/{dataset}_{split}_{base_text_model}.faiss"),
             os.path.join(curr_dir, f"data/embeddings/{dataset}_{split}_{base_text_model}_ids.pkl"),
             os.path.join(
@@ -264,8 +265,7 @@ def run_fuse_embeddings(
                 f"data/embeddings/{dataset}_{split}_{node_model}" +
                 f"{'_' + text_model if not train else ''}.faiss"
             ),
-            os.path.join(curr_dir, f"data/embeddings/{dataset}_{split}_{node_model}_ids.pkl"),
-            fusion_func
+            os.path.join(curr_dir, f"data/embeddings/{dataset}_{split}_{node_model}_ids.pkl")
         )
 
     with_split(True)
@@ -300,6 +300,7 @@ def run_fuse_embeddings_with_projection(
                 f"data/embeddings/{dataset}_{split}_{fusion_model}_{text_model}_{node_model}_ids" +
                 ".pkl"
             ),
+            fusion_func,
             os.path.join(
                 curr_dir,
                 f"data/embeddings/{dataset}_{split}_{projection}_text_projected_{text_model}" +
@@ -319,8 +320,7 @@ def run_fuse_embeddings_with_projection(
                 curr_dir,
                 f"data/embeddings/{dataset}_{split}_{projection}_node_projected_{text_model}" +
                 f"_{node_model}_ids.pkl"
-            ),
-            fusion_func
+            )
         )
 
     with_split(True)

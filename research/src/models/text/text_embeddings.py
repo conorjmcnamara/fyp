@@ -7,7 +7,7 @@ from tqdm import tqdm
 from typing import Union, Dict, Tuple, List
 from src.models.text.text_dataset import TextDataset
 from src.utils.file_utils import read_papers, save_embeddings, save_obj
-from src.config.settings import BATCH_SIZE, NUM_WORKERS
+from src.config.settings import TEXT_EMBEDDING_BATCH_SIZE, NUM_WORKERS
 
 
 def generate_and_save_text_embeddings(
@@ -42,7 +42,7 @@ def generate_and_save_text_embeddings(
 
     data_loader = DataLoader(
         dataset,
-        batch_size=BATCH_SIZE,
+        batch_size=TEXT_EMBEDDING_BATCH_SIZE,
         shuffle=False,
         num_workers=NUM_WORKERS,
         pin_memory=True
