@@ -4,13 +4,22 @@ from transformers import AutoTokenizer, AutoModel
 from adapters import AutoAdapterModel
 from torch.utils.data import DataLoader
 from tqdm import tqdm
+from gensim.models.doc2vec import Doc2Vec, TaggedDocument
+from gensim.utils import simple_preprocess
 from typing import Union, Dict, Tuple, List
 from src.models.text.text_dataset import TextDataset
+from src.data_models.paper import Paper
 from src.utils.file_utils import read_papers, save_embeddings, save_obj
-from src.config.settings import TEXT_EMBEDDING_BATCH_SIZE, NUM_WORKERS
+from src.config.settings import (
+    TEXT_EMBEDDING_BATCH_SIZE,
+    NUM_WORKERS,
+    DOC2VEC_DIM,
+    DOC2VEC_WINDOW,
+    MIN_DOC_FREQ
+)
 
 
-def generate_and_save_text_embeddings(
+def generate_and_save_transformer_embeddings(
     index_path: str,
     ids_path: str,
     papers_path: str,
@@ -48,13 +57,13 @@ def generate_and_save_text_embeddings(
         pin_memory=True
     )
 
-    embeddings, ids = generate_text_embeddings(model, data_loader, device)
+    embeddings, ids = generate_transformer_embeddings(model, data_loader, device)
     print(f"Saving {len(embeddings)} embeddings of dim {embeddings.shape[1]}")
     save_embeddings(index_path, embeddings)
     save_obj(ids_path, ids)
 
 
-def generate_text_embeddings(
+def generate_transformer_embeddings(
     model: torch.nn.Module,
     data_loader: DataLoader,
     device: torch.device
@@ -80,3 +89,58 @@ def generate_text_embeddings(
             ids.extend(batch["id"])
 
     return torch.cat(embeddings, dim=0).numpy(), ids
+
+
+def train_doc2vec(doc2vec_path: str, papers_path: str) -> None:
+    papers = read_papers(papers_path)
+    docs = [
+        TaggedDocument(
+            words=simple_preprocess(paper.title + ' ' + paper.abstract),
+            tags=[paper.id]
+        )
+        for paper in papers
+    ]
+
+    # Fit Doc2vec on the training set
+    doc2vec = Doc2Vec(
+        vector_size=DOC2VEC_DIM,
+        window=DOC2VEC_WINDOW,
+        min_count=MIN_DOC_FREQ,
+        workers=NUM_WORKERS
+    )
+    doc2vec.build_vocab(docs)
+    doc2vec.train(docs, total_examples=doc2vec.corpus_count, epochs=doc2vec.epochs)
+
+    print("Saving Doc2vec")
+    doc2vec.save(doc2vec_path)
+
+
+def generate_and_save_doc2vec_embeddings(
+    index_path: str,
+    ids_path: str,
+    papers_path: str,
+    model_path: str
+) -> None:
+    doc2vec = Doc2Vec.load(model_path)
+    papers = read_papers(papers_path)
+
+    embeddings, ids = generate_doc2vec_embeddings(papers, doc2vec)
+    print(f"Saving {len(embeddings)} embeddings of dim {embeddings.shape[1]}")
+    save_embeddings(index_path, embeddings)
+    save_obj(ids_path, ids)
+
+
+def generate_doc2vec_embeddings(
+    papers: List[Paper],
+    doc2vec: Doc2Vec
+) -> Tuple[np.ndarray, List[str]]:
+    emebddings = []
+    ids = []
+
+    for paper in papers:
+        tokens = simple_preprocess(paper.title + ' ' + paper.abstract)
+        embedding = doc2vec.infer_vector(tokens)
+        emebddings.append(embedding)
+        ids.append(paper.id)
+
+    return np.vstack(emebddings), ids

@@ -28,6 +28,7 @@ def generate_and_save_train_node_embeddings(
 
 
 def generate_node2vec_embeddings(graph: nx.DiGraph) -> Tuple[np.ndarray, List[str]]:
+    # Fit Node2vec on the training set
     node2vec = Node2Vec(
         graph,
         dimensions=NODE2VEC_DIM,
@@ -36,7 +37,6 @@ def generate_node2vec_embeddings(graph: nx.DiGraph) -> Tuple[np.ndarray, List[st
         workers=NUM_WORKERS
     )
 
-    # Fit Node2vec on the training set
     model = node2vec.fit(
         window=NODE2VEC_WINDOW,
         min_count=NODE2VEC_MIN_COUNT,

@@ -4,7 +4,11 @@ import numpy as np
 from typing import List, Union, Dict, Callable, Tuple
 from src.models.text.text_vectors import train_tfidf, generate_and_save_text_vectors
 from src.evaluation.evaluate import evaluate
-from src.models.text.text_embeddings import generate_and_save_text_embeddings
+from src.models.text.text_embeddings import (
+    generate_and_save_transformer_embeddings,
+    train_doc2vec,
+    generate_and_save_doc2vec_embeddings
+)
 from src.models.graph.graph import generate_and_save_graph
 from src.models.graph.node_embeddings import (
     generate_and_save_train_node_embeddings,
@@ -21,20 +25,17 @@ def run_train_tfidf(curr_dir: str, dataset: str) -> None:
     )
 
 
-def run_generate_and_save_text_vectors(
-    curr_dir: str,
-    dataset: str,
-    model: str
-) -> None:
-    generate_and_save_text_vectors(
-        os.path.join(curr_dir, f"data/embeddings/{dataset}_train_{model}.faiss"),
-        os.path.join(curr_dir, f"data/embeddings/{dataset}_test_{model}.faiss"),
-        os.path.join(curr_dir, f"data/embeddings/{dataset}_train_{model}_ids.pkl"),
-        os.path.join(curr_dir, f"data/embeddings/{dataset}_test_{model}_ids.pkl"),
-        os.path.join(curr_dir, f"data/embeddings/{dataset}_train_{model}.pkl"),
-        os.path.join(curr_dir, f"data/parsed/{dataset}_train.json"),
-        os.path.join(curr_dir, f"data/parsed/{dataset}_test.json")
-    )
+def run_generate_and_save_text_vectors(curr_dir: str, dataset: str, model: str) -> None:
+    def with_split(split: str) -> None:
+        generate_and_save_text_vectors(
+            os.path.join(curr_dir, f"data/embeddings/{dataset}_{split}_{model}.faiss"),
+            os.path.join(curr_dir, f"data/embeddings/{dataset}_{split}_{model}_ids.pkl"),
+            os.path.join(curr_dir, f"data/parsed/{dataset}_{split}.json"),
+            os.path.join(curr_dir, f"data/embeddings/{dataset}_train_{model}.pkl")
+        )
+
+    with_split("test")
+    with_split("train")
 
 
 def run_evaluate(
@@ -88,7 +89,7 @@ def run_evaluate(
     )
 
 
-def run_generate_and_save_text_embeddings(
+def run_generate_and_save_transformer_embeddings(
     curr_dir: str,
     dataset: str,
     model: str,
@@ -97,7 +98,7 @@ def run_generate_and_save_text_embeddings(
     model_path = model.split('/')[-1].split('_')[0]
 
     def with_split(split: str) -> None:
-        generate_and_save_text_embeddings(
+        generate_and_save_transformer_embeddings(
             os.path.join(curr_dir, f"data/embeddings/{dataset}_{split}_{model_path}.faiss"),
             os.path.join(curr_dir, f"data/embeddings/{dataset}_{split}_{model_path}_ids.pkl"),
             os.path.join(curr_dir, f"data/parsed/{dataset}_{split}.json"),
@@ -109,10 +110,29 @@ def run_generate_and_save_text_embeddings(
     with_split("train")
 
 
+def run_train_doc2vec(curr_dir: str, dataset: str) -> None:
+    train_doc2vec(
+        os.path.join(curr_dir, f"data/embeddings/{dataset}_train_doc2vec.model"),
+        os.path.join(curr_dir, f"data/parsed/{dataset}_train.json")
+    )
+
+
+def run_generate_and_save_doc2vec_embeddings(curr_dir: str, dataset: str) -> None:
+    def with_split(split: str) -> None:
+        generate_and_save_doc2vec_embeddings(
+            os.path.join(curr_dir, f"data/embeddings/{dataset}_{split}_doc2vec.faiss"),
+            os.path.join(curr_dir, f"data/embeddings/{dataset}_{split}_doc2vec_ids.pkl"),
+            os.path.join(curr_dir, f"data/parsed/{dataset}_{split}.json"),
+            os.path.join(curr_dir, f"data/embeddings/{dataset}_train_doc2vec.model")
+        )
+
+    with_split("test")
+    with_split("train")
+
+
 def run_generate_and_save_graph(curr_dir: str, dataset: str) -> None:
     generate_and_save_graph(
         os.path.join(curr_dir, f"data/embeddings/{dataset}_train_graph.pkl"),
-        os.path.join(curr_dir, f"data/parsed/{dataset}_train.json")
     )
 
 
