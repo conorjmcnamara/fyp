@@ -20,7 +20,7 @@ def generate_and_save_text_embeddings(
     if adapter_config:
         model = AutoAdapterModel.from_pretrained(model_name)
         model.load_adapter(
-            model_name,
+            model_name.split('_')[0],
             source=adapter_config.get("source"),
             load_as=adapter_config.get("load_as"),
             set_active=True
