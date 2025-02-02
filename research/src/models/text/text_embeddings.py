@@ -142,5 +142,5 @@ def generate_doc2vec_embeddings(
         embedding = doc2vec.infer_vector(tokens)
         emebddings.append(embedding)
         ids.append(paper.id)
-    
+
     return np.vstack(emebddings), ids

@@ -130,6 +130,12 @@ def run_generate_and_save_doc2vec_embeddings(curr_dir: str, dataset: str) -> Non
     with_split("train")
 
 
+def run_generate_and_save_graph(curr_dir: str, dataset: str) -> None:
+    generate_and_save_graph(
+        os.path.join(curr_dir, f"data/embeddings/{dataset}_train_graph.pkl"),
+    )
+
+
 def run_generate_and_save_train_node_embeddings(
     curr_dir: str,
     dataset: str,
@@ -141,12 +147,6 @@ def run_generate_and_save_train_node_embeddings(
         os.path.join(curr_dir, f"data/embeddings/{dataset}_train_{model}_ids.pkl"),
         os.path.join(curr_dir, f"data/embeddings/{dataset}_train_graph.pkl"),
         embedding_func
-    )
-
-
-def run_generate_and_save_graph(curr_dir: str, dataset: str) -> None:
-    generate_and_save_graph(
-        os.path.join(curr_dir, f"data/embeddings/{dataset}_train_graph.pkl"),
     )
 
 
