@@ -1,5 +1,6 @@
 adapters
 faiss-cpu
+gensim
 matplotlib
 mvlearn
 networkx
