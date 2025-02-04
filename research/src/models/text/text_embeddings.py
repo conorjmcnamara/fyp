@@ -74,14 +74,13 @@ def generate_transformer_embeddings(
 
     with torch.no_grad():
         for batch in tqdm(data_loader, desc="Generating embeddings"):
-            # Move inputs to device
             input_ids = batch["input_ids"].squeeze(1).to(device)
             attention_mask = batch["attention_mask"].squeeze(1).to(device)
 
-            # Forward pass through the model
+            # Forward pass
             outputs = model(input_ids, attention_mask=attention_mask)
 
-            # Average token embeddings to generate a single embedding per input
+            # Average token embeddings
             last_hidden_state = outputs.last_hidden_state
             batch_embeddings = last_hidden_state.mean(dim=1)
             embeddings.append(batch_embeddings.cpu())

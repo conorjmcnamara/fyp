@@ -139,14 +139,17 @@ def run_generate_and_save_graph(curr_dir: str, dataset: str) -> None:
 def run_generate_and_save_train_node_embeddings(
     curr_dir: str,
     dataset: str,
-    model: str,
-    embedding_func: Callable[[nx.DiGraph], Tuple[np.ndarray, List[str]]]
+    p: float,
+    q: float
 ) -> None:
+    model = f"node2vec_{p}_{q}"
+
     generate_and_save_train_node_embeddings(
         os.path.join(curr_dir, f"data/embeddings/{dataset}_train_{model}.faiss"),
         os.path.join(curr_dir, f"data/embeddings/{dataset}_train_{model}_ids.pkl"),
         os.path.join(curr_dir, f"data/embeddings/{dataset}_train_graph.pkl"),
-        embedding_func
+        p,
+        q
     )
 
 

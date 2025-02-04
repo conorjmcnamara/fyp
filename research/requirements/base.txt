@@ -8,5 +8,5 @@ node2vec
 numpy>=1.25,<2.0
 pandas
 scikit-learn
-torch==1.13.1
+torch
 transformers
