@@ -1,16 +1,16 @@
 import networkx as nx
 import numpy as np
 from node2vec import Node2Vec
-from typing import Tuple, List, Callable
+from typing import Tuple, List
 from src.utils.file_utils import read_obj, save_obj, read_embeddings, save_embeddings
 from src.config.settings import (
-    NODE2VEC_DIM,
-    NODE2VEC_WALK_LEN,
-    NODE2VEC_NUM_WALKS,
+    NODE_EMBEDDING_DIM,
+    NODE_EMBEDDING_WALK_LEN,
+    NODE_EMBEDDING_NUM_WALKS,
     NUM_WORKERS,
-    NODE2VEC_WINDOW,
-    NODE2VEC_MIN_COUNT,
-    NODE2VEC_BATCH_WORDS
+    NODE_EMBEDDING_WINDOW,
+    NODE_EMBEDDING_MIN_COUNT,
+    NODE_EMBEDDING_BATCH_WORDS
 )
 
 
@@ -18,33 +18,40 @@ def generate_and_save_train_node_embeddings(
     index_path: str,
     ids_path: str,
     graph_path: str,
-    embedding_func: Callable[[nx.DiGraph], Tuple[np.ndarray, List[str]]]
+    p: float,
+    q: float
 ) -> None:
     graph: nx.DiGraph = read_obj(graph_path)
-    embeddings, ids = embedding_func(graph)
+    embeddings, ids = generate_train_node_embeddings(graph, p, q)
     print(f"Saving {len(embeddings)} training embeddings of dim {embeddings.shape[1]}")
     save_embeddings(index_path, embeddings)
     save_obj(ids_path, ids)
 
 
-def generate_node2vec_embeddings(graph: nx.DiGraph) -> Tuple[np.ndarray, List[str]]:
-    # Fit Node2vec on the training set
+def generate_train_node_embeddings(
+    graph: nx.DiGraph,
+    p: float,
+    q: float
+) -> Tuple[np.ndarray, List[str]]:
+    # Fit Node2vec (or DeepWalk if p=1 and q=1) on the training set
     node2vec = Node2Vec(
         graph,
-        dimensions=NODE2VEC_DIM,
-        walk_length=NODE2VEC_WALK_LEN,
-        num_walks=NODE2VEC_NUM_WALKS,
-        workers=NUM_WORKERS
+        dimensions=NODE_EMBEDDING_DIM,
+        walk_length=NODE_EMBEDDING_WALK_LEN,
+        num_walks=NODE_EMBEDDING_NUM_WALKS,
+        workers=NUM_WORKERS,
+        p=p,
+        q=q
     )
 
-    model = node2vec.fit(
-        window=NODE2VEC_WINDOW,
-        min_count=NODE2VEC_MIN_COUNT,
-        batch_words=NODE2VEC_BATCH_WORDS
+    word2vec = node2vec.fit(
+        window=NODE_EMBEDDING_WINDOW,
+        min_count=NODE_EMBEDDING_MIN_COUNT,
+        batch_words=NODE_EMBEDDING_BATCH_WORDS
     )
 
     ids = list(graph.nodes)
-    embeddings = np.array([model.wv[id] for id in ids])
+    embeddings = np.array([word2vec.wv[id] for id in ids])
     return embeddings, ids
 
 

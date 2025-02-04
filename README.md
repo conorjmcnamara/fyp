@@ -12,11 +12,10 @@ pip install -r base.txt
 pip install -r dev.txt
 ```
 
-### GPU-Acceleration
-For optimal performance, it is recommended to run the following tasks in a GPU-enabled environment (such as Google Colab)
+### GPU Acceleration
+For optimal performance, it is recommended to run the following tasks in a GPU-enabled environment (such as Google Colab):
 - `research/notebooks/rq1.ipynb`: SciBERT text embedding generation
 - `research/notebooks/rq2.ipynb`: SPECTER and SPECTER2 text embedding generation
-- `research/notebooks/rq3.ipynb`: Deep CCA training
 
 ### Linting
 ```sh
