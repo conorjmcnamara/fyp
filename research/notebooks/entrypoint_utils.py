@@ -1,7 +1,7 @@
 import os
 import networkx as nx
 import numpy as np
-from typing import List, Union, Dict, Callable, Tuple
+from typing import List, Union, Dict, Callable
 from src.models.text.text_vectors import train_tfidf, generate_and_save_text_vectors
 from src.evaluation.evaluate import evaluate
 from src.models.text.text_embeddings import (
