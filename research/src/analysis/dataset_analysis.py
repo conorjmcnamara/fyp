@@ -42,7 +42,7 @@ def analyse_dataset(papers_path: str, config: DatasetConfig) -> None:
 
         citation_counts.append(paper.citation_count)
         reference_counts.append(len(paper.references))
-    
+
         for ref_id in paper.references:
             if ref_id not in paper_map:
                 external_reference_count += 1

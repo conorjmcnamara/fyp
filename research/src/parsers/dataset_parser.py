@@ -14,11 +14,11 @@ class DatasetParser(ABC):
     @abstractmethod
     def parse_and_transform(self, input_path: str, output_json_path: str) -> None:
         pass
-    
+
     @abstractmethod
     def is_paper_populated(self, paper: Paper) -> bool:
         pass
-    
+
     def read_json(
         self,
         json_path: str,

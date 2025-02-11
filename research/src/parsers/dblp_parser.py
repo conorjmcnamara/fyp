@@ -28,7 +28,7 @@ class DblpParser(DatasetParser):
         papers = self.filter_papers(papers)
         print(f"Saving {len(papers)} papers")
         save_papers(output_json_path, list(papers.values()))
-    
+
     def is_paper_populated(self, paper: Paper) -> bool:
         return (
             bool(
@@ -80,7 +80,7 @@ class DblpParser(DatasetParser):
 
         if self.is_paper_populated(paper):
             papers[paper.id] = paper
-        
+
         return papers
 
     def _parse_v10_paper(self, paper_json: Dict[str, Any]) -> Paper:
