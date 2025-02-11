@@ -3,12 +3,19 @@
 The Jupyter notebooks in `research/notebooks` contain the entrypoints for all experiments.
 
 ### Installation
-Each notebook contains dependency installation commands.
-
 ```sh
 cd research/requirements
 
 pip install -r base.txt
+```
+
+Notebooks that require additional dependencies include the necessary installation commands.
+
+To install development dependencies (for linting), run:
+
+```sh
+cd research/requirements
+
 pip install -r dev.txt
 ```
 
@@ -31,6 +38,13 @@ flake8 .
 cd app/backend/requirements
 
 pip install -r base.txt
+```
+
+To install development dependencies (for linting and testing), run:
+
+```sh
+cd app/backend/requirements
+
 pip install -r dev.txt
 ```
 

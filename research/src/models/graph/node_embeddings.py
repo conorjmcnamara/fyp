@@ -4,13 +4,13 @@ from node2vec import Node2Vec
 from typing import Tuple, List
 from src.utils.file_utils import read_obj, save_obj, read_embeddings, save_embeddings
 from src.config.settings import (
-    NODE_EMBEDDING_DIM,
-    NODE_EMBEDDING_WALK_LEN,
-    NODE_EMBEDDING_NUM_WALKS,
+    NODE2VEC_DIM,
+    NODE2VEC_WALK_LEN,
+    NODE2VEC_NUM_WALKS,
     NUM_WORKERS,
-    NODE_EMBEDDING_WINDOW,
-    NODE_EMBEDDING_MIN_COUNT,
-    NODE_EMBEDDING_BATCH_WORDS
+    WORD2VEC_WINDOW,
+    WORD2VEC_MIN_COUNT,
+    WORD2VEC_BATCH_WORDS
 )
 
 
@@ -36,18 +36,18 @@ def generate_train_node_embeddings(
     # Fit Node2vec (or DeepWalk if p=1 and q=1) on the training set
     node2vec = Node2Vec(
         graph,
-        dimensions=NODE_EMBEDDING_DIM,
-        walk_length=NODE_EMBEDDING_WALK_LEN,
-        num_walks=NODE_EMBEDDING_NUM_WALKS,
+        dimensions=NODE2VEC_DIM,
+        walk_length=NODE2VEC_WALK_LEN,
+        num_walks=NODE2VEC_NUM_WALKS,
         workers=NUM_WORKERS,
         p=p,
         q=q
     )
 
     word2vec = node2vec.fit(
-        window=NODE_EMBEDDING_WINDOW,
-        min_count=NODE_EMBEDDING_MIN_COUNT,
-        batch_words=NODE_EMBEDDING_BATCH_WORDS
+        window=WORD2VEC_WINDOW,
+        min_count=WORD2VEC_MIN_COUNT,
+        batch_words=WORD2VEC_BATCH_WORDS
     )
 
     ids = list(graph.nodes)
