@@ -47,7 +47,7 @@ def train_cca(cca_path: str, text_embeddings: np.ndarray, node_embeddings: np.nd
 
 
 def train_dcca(dcca_path: str, text_embeddings: np.ndarray, node_embeddings: np.ndarray) -> None:
-    # Fit DCCA on the training set, learning text and node projection deep neural networks
+    # Fit Deep CCA on the training set, learning text and node projection deep neural networks
     dcca = DCCA(
         input_size1=text_embeddings.shape[1],
         input_size2=node_embeddings.shape[1],

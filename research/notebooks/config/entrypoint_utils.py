@@ -133,6 +133,7 @@ def run_generate_and_save_doc2vec_embeddings(curr_dir: str, dataset: str) -> Non
 def run_generate_and_save_graph(curr_dir: str, dataset: str) -> None:
     generate_and_save_graph(
         os.path.join(curr_dir, f"data/embeddings/{dataset}_train_graph.pkl"),
+        os.path.join(curr_dir, f"data/parsed/{dataset}_train.json")
     )
 
 
