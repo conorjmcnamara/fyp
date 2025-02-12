@@ -1,7 +1,5 @@
 # Content-Based Citation Recommendation with Bibliographic Network Awareness
 ## Running the Research
-The Jupyter notebooks in `research/notebooks` contain the entrypoints for all experiments.
-
 ### Installation
 ```sh
 cd research/requirements
@@ -19,12 +17,15 @@ cd research/requirements
 pip install -r dev.txt
 ```
 
-### GPU Acceleration
+### Usage
+The Jupyter notebooks in `research/notebooks` contain the entrypoints for all experiments.
+
+#### GPU Acceleration
 For optimal performance, it is recommended to run the following tasks in a GPU-enabled environment (such as Google Colab):
 - `research/notebooks/rq1.ipynb`: SciBERT text embedding generation
 - `research/notebooks/rq2.ipynb`: SPECTER and SPECTER2 text embedding generation
 
-### Linting
+#### Linting
 ```sh
 cd research
 
@@ -48,17 +49,28 @@ cd app/backend/requirements
 pip install -r dev.txt
 ```
 
+#### Database
+Run the following script to initalize the SQLite database and populate it with papers:
+
+```sh
+cd app/backend
+
+python -m src.utils.populate_db data/v10_train.json
+```
+
 #### Frontend
 ```sh
 cd app/frontend
 
 npm install
+npm run build
 ```
 
-### Docker
-Define ports for the backend API and web application by setting `BACKEND_PORT` and `FRONTEND_PORT` in `app/.env`, defaulting to 8000 and 3000, respectively.
+### Usage
+Set the `BACKEND_PORT` and `FRONTEND_PORT` in the `.env` files located in `app/backend/` and `app/frontend/`, respectively, defaulting to ports 8000 and 3000.
 
-#### Startup
+#### Docker
+##### Startup
 ```sh
 cd app
 
@@ -67,15 +79,30 @@ cd app
 
 Once started, the backend API and web application will run in Docker containers and can be accessed at [http://localhost:8000](http://localhost:8000) and [http://localhost:3000](http://localhost:3000), respectively. Additionally, Swagger UI for the API documentation can be accessed at [http://localhost:8000/docs](http://localhost:8000/docs).
 
-#### Shutdown
+##### Shutdown
 ```sh
 cd app
 
 ./scripts/shutdown.sh
 ```
 
-### Testing
-#### Backend
+#### Local
+##### Backend
+```sh
+cd app/backend
+
+python -m src.main
+```
+
+##### Frontend
+```sh
+cd app/frontend
+
+npm start
+```
+
+#### Testing
+##### Backend
 ```sh
 cd app/backend
 
@@ -84,7 +111,7 @@ pytest
 
 After running the tests, a coverage report will be generated and saved at `app/backend/coverage.xml`.
 
-#### Frontend
+##### Frontend
 ```sh
 cd app/frontend
 
@@ -93,15 +120,15 @@ npm run test
 
 After running the tests, a coverage report will be generated and saved at `app/frontend/coverage/clover.xml`.
 
-### Linting
-#### Backend
+#### Linting
+##### Backend
 ```sh
 cd app/backend
 
 flake8 .
 ```
 
-#### Frontend
+##### Frontend
 ```sh
 cd app/frontend
 
