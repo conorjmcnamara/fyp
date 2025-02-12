@@ -4,19 +4,20 @@ services:
     image: backend_image
     container_name: backend_container
     ports: 
-      - "${BACKEND_PORT}:${BACKEND_PORT}"
+      - "${BACKEND_PORT:-8000}:${BACKEND_PORT:-8000}"
     env_file:
-      - .env
+      - ./backend/.env
   
   frontend:
     build: ./frontend/
     image: frontend_image
     container_name: frontend_container
     ports:
-      - "${FRONTEND_PORT}:${FRONTEND_PORT}"
-    env_file:
-      - .env
+      - "${FRONTEND_PORT:-3000}:${FRONTEND_PORT:-3000}"
     environment:
-      - REACT_APP_BACKEND_URL=http://localhost:${BACKEND_PORT}
+      - REACT_APP_BACKEND_URL=http://localhost:${BACKEND_PORT:-8000}
+    env_file:
+      - ./backend/.env
+      - ./frontend/.env
     depends_on:
       - backend

@@ -11,6 +11,4 @@ COPY config-overrides.js ./
 COPY tsconfig.json ./
 
 RUN npm run build
-
-EXPOSE ${FRONTEND_PORT}
-CMD PORT=${FRONTEND_PORT} npm start
+CMD ["npm", "start"]

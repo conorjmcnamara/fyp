@@ -6,8 +6,8 @@ from typing import List
 class Paper:
     id: str = ""
     title: str = ""
-    authors: List[str] = field(default_factory=list)
     year: int = 0
+    authors: List[str] = field(default_factory=list)
     abstract: str = ""
     venue: str = ""
     references: List[str] = field(default_factory=list)
