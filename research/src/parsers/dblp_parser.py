@@ -64,7 +64,7 @@ class DblpParser(DatasetParser):
                     year = int(line[len(DblpTxtField.YEAR.value):])
                     if year >= self.config.train_years[0]:
                         paper.year = year
-                
+
                 elif line.startswith(DblpTxtField.AUTHORS.value):
                     paper.authors = line[len(DblpTxtField.AUTHORS.value):].split(", ")
 
@@ -106,7 +106,7 @@ class DblpParser(DatasetParser):
         year = paper_data.get("year")
         if year and year >= self.config.train_years[0]:
             paper.year = year
-        
+
         for author in paper_data.get("authors", []):
             name = author.get("name")
             if name:
