@@ -1,1 +1,7 @@
-/src/*.test*
+build/
+coverage/
+node_modules/
+src/*.test*
+.eslintignore
+.eslintrc.json
+.gitignore

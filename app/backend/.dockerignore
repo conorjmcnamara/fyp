@@ -1,1 +1,9 @@
+data/papers/
+tests/
 __pycache__
+.pytest_cache
+.coverage
+.flake8
+coverage.xml
+pytest.ini
+.gitignore

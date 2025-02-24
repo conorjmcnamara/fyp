@@ -55,7 +55,7 @@ Run the following script to initalize the SQLite database and populate it with p
 ```sh
 cd app/backend
 
-python -m src.utils.populate_db data/v10_train.json
+python -m src.utils.populate_db <path_to_papers_json_file>
 ```
 
 #### Frontend

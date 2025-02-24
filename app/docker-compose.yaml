@@ -7,6 +7,10 @@ services:
       - "${BACKEND_PORT:-8000}:${BACKEND_PORT:-8000}"
     env_file:
       - ./backend/.env
+    volumes:
+      - ./backend/data/db:/app/data/db
+      - ./backend/data/embeddings:/app/data/embeddings
+      - ./backend/data/models:/app/data/models
   
   frontend:
     build: ./frontend/

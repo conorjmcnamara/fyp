@@ -1,7 +1,7 @@
 import torch
 import numpy as np
-from transformers import AutoTokenizer, AutoModel
 from adapters import AutoAdapterModel
+from transformers import AutoModel, AutoTokenizer
 from torch.utils.data import DataLoader
 from tqdm import tqdm
 from gensim.models.doc2vec import Doc2Vec, TaggedDocument
