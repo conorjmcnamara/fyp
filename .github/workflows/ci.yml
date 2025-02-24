@@ -103,12 +103,13 @@ jobs:
         uses: docker/setup-buildx-action@v3
       
       - name: Build Docker Compose services
-        uses: docker/bake-action@master
+        uses: docker/bake-action@v6
         with:
           push: false
+          workdir: './app/'
           files: |-
-            ./app/docker-compose.yaml
-            ./app/docker-compose-cache.json
+            docker-compose.yaml
+            docker-compose-cache.json
   
   research:
     runs-on: ubuntu-latest
