@@ -106,10 +106,12 @@ jobs:
         uses: docker/bake-action@v6
         with:
           push: false
-          workdir: ./app
           files: |-
             ./app/docker-compose.yaml
             ./app/docker-compose-cache.json
+          set: |
+            backend.context=app/backend
+            frontend.context=app/frontend
   
   research:
     runs-on: ubuntu-latest
