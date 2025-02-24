@@ -104,9 +104,9 @@ jobs:
       
       - name: Build Docker Compose services
         uses: docker/bake-action@master
-        working-directory: ./app
         with:
           push: false
+          workdir: ./app
           files: |-
             docker-compose.yaml
             docker-compose-cache.json
