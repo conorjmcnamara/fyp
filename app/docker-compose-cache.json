@@ -1,6 +1,7 @@
 {
     "target": {
         "backend": {
+            "context": "./backend",
             "cache-from": [
                 "type=gha,scope=conorjmcnamara/fyp/backend"
             ],
@@ -9,6 +10,7 @@
             ]
         },
         "frontend": {
+            "context": "./frontend",
             "cache-from": [
                 "type=gha,scope=conorjmcnamara/fyp/frontend"
             ],
