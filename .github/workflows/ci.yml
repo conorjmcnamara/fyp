@@ -113,7 +113,10 @@ jobs:
       - name: Build Docker Compose services
         working-directory: ./app
         run: |
-          docker buildx bake --file ./docker-compose.yaml --file ./docker-compose-cache.json
+          docker buildx bake \
+            --allow=fs.write=/tmp \
+            --file ./docker-compose.yaml \
+            --file ./docker-compose-cache.json
   
   research:
     runs-on: ubuntu-latest
