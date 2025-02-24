@@ -1,0 +1,20 @@
+{
+    "target": {
+        "backend": {
+            "cache-from": [
+                "type=local,source=/tmp/.buildx-cache"
+            ],
+            "cache-to": [
+                "type=local,dest=/tmp/.buildx-cache,mode=max"
+            ]
+        },
+        "frontend": {
+            "cache-from": [
+                "type=local,source=/tmp/.buildx-cache"
+            ],
+            "cache-to": [
+                "type=local,dest=/tmp/.buildx-cache,mode=max"
+            ]
+        }
+    }
+}
