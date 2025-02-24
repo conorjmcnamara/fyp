@@ -4,12 +4,6 @@ on:
   push:
     branches:
       - '*'
-  pull_request:
-    branches:
-      - '*'
-
-env:
-  TAG_NAME: ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_REPO }}
 
 jobs:
   backend:
@@ -101,32 +95,14 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
       
-      # - name: Build Docker images
-      #   uses: docker/bake-action@v6
-      #   with:
-      #     push: false
-      #     workdir: ./app
-      #     files: |-
-      #       ./app/docker-compose.yaml
-      #       ./app/docker-compose-cache.json
-
-      - name: Login to Docker Hub
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_PASSWORD }}
-
-      - name: Build and push Docker images
+      - name: Build Docker images
         uses: docker/bake-action@v6
         with:
-          push: true
+          push: false
           workdir: ./app
           files: |-
             ./app/docker-compose.yaml
             ./app/docker-compose-cache.json
-          set: |
-            backend.tags=${{ env.TAG_NAME }}:backend-latest
-            frontend.tags=${{ env.TAG_NAME }}:frontend-latest
   
   research:
     runs-on: ubuntu-latest

@@ -34,5 +34,5 @@ jobs:
             ./app/docker-compose.yaml
             ./app/docker-compose-cache.json
           set: |
-            backend.tags=$TAG_NAME:backend-latest
-            frontend.tags=$TAG_NAME:frontend-latest
+            backend.tags=${{ env.TAG_NAME }}:backend-latest
+            frontend.tags=${{ env.TAG_NAME }}:frontend-latest
