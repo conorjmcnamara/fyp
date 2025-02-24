@@ -103,8 +103,9 @@ jobs:
         uses: docker/setup-buildx-action@v3
       
       - name: Build Docker Compose services
+        uses: docker/bake-action@master
         working-directory: ./app
-        uses:
+        with:
           push: false
           files: |-
             docker-compose.yaml
