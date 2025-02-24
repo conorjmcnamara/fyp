@@ -2,18 +2,18 @@
     "target": {
         "backend": {
             "cache-from": [
-                "type=local,source=/tmp/.buildx-cache"
+                "type=gha,scope=conorjmcnamara/fyp/backend"
             ],
             "cache-to": [
-                "type=local,dest=/tmp/.buildx-cache,mode=max"
+                "type=gha,mode=max,scope=conorjmcnamara/fyp/backend"
             ]
         },
         "frontend": {
             "cache-from": [
-                "type=local,source=/tmp/.buildx-cache"
+                "type=gha,scope=conorjmcnamara/fyp/frontend"
             ],
             "cache-to": [
-                "type=local,dest=/tmp/.buildx-cache,mode=max"
+                "type=gha,mode=max,scope=conorjmcnamara/fyp/frontend"
             ]
         }
     }
