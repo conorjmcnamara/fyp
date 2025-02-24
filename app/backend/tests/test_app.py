@@ -1,4 +1,8 @@
 from fastapi.testclient import TestClient
-from src.main import app
+from src.app import app
 
 client = TestClient(app)
+
+
+def test_app():
+    assert True
