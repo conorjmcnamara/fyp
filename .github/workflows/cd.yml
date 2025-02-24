@@ -24,21 +24,24 @@ jobs:
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
-    
-      - name: Cache Docker layers
-        uses: actions/cache@v4
+      
+      - name: Build Docker Compose services
+        uses: docker/bake-action@v6
         with:
-          path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-docker-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-docker-
+          push: false
+          workdir: ./app
+          files: |-
+            ./app/docker-compose.yaml
+            ./app/docker-compose-cache.json
       
       - name: Build and push Docker images
-        uses: docker/build-push-action@v5
+        uses: docker/bake-action@v6
         with:
-          context: ./app
-          file: ./app/docker-compose.yaml
           push: true
-          tags: $TAG_NAME:backend-latest, $TAG_NAME:frontend-latest
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          workdir: ./app
+          files: |-
+            ./app/docker-compose.yaml
+            ./app/docker-compose-cache.json
+          set: |
+            backend.image=$TAG_NAME:backend-latest
+            frontend.image=$TAG_NAME:frontend-latest

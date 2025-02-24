@@ -102,7 +102,7 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
       
-      - name: Build Docker Compose services
+      - name: Build Docker images
         uses: docker/bake-action@v6
         with:
           push: false
@@ -110,9 +110,6 @@ jobs:
           files: |-
             ./app/docker-compose.yaml
             ./app/docker-compose-cache.json
-          set: |
-            backend.context=app/backend
-            frontend.context=app/frontend
   
   research:
     runs-on: ubuntu-latest

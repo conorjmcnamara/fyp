@@ -1,19 +1,21 @@
 {
     "target": {
         "backend": {
+            "context": "./app/backend",
             "cache-from": [
-                "type=gha,scope=conorjmcnamara/fyp/backend"
+                "type=gha,scope=backend"
             ],
             "cache-to": [
-                "type=gha,mode=max,scope=conorjmcnamara/fyp/backend"
+                "type=gha,mode=max,scope=backend"
             ]
         },
         "frontend": {
+            "context": "./app/frontend",
             "cache-from": [
-                "type=gha,scope=conorjmcnamara/fyp/frontend"
+                "type=gha,scope=frontend"
             ],
             "cache-to": [
-                "type=gha,mode=max,scope=conorjmcnamara/fyp/frontend"
+                "type=gha,mode=max,scope=frontend"
             ]
         }
     }
