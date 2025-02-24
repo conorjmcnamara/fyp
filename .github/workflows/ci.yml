@@ -106,6 +106,7 @@ jobs:
         uses: docker/bake-action@v6
         with:
           push: false
+          workdir: ./app
           files: |-
             ./app/docker-compose.yaml
             ./app/docker-compose-cache.json
