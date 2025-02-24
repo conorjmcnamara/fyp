@@ -1,6 +1,11 @@
 services:
   backend:
-    build: ./backend/
+    build:
+      context: ./backend/
+      cache_from:
+        - type=local,source=/tmp/.buildx-cache
+      cache_to:
+        - type=local,dest=/tmp/.buildx-cache,mode=max
     image: backend_image
     container_name: backend_container
     ports: 
@@ -13,7 +18,12 @@ services:
       - ./backend/data/models:/app/data/models
   
   frontend:
-    build: ./frontend/
+    build:
+      context: ./frontend/
+      cache_from:
+        - type=local,source=/tmp/.buildx-cache
+      cache_to:
+        - type=local,dest=/tmp/.buildx-cache,mode=max
     image: frontend_image
     container_name: frontend_container
     ports:
