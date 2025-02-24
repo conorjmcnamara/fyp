@@ -106,10 +106,9 @@ jobs:
         uses: docker/bake-action@master
         with:
           push: false
-          workdir: ./app
           files: |-
-            docker-compose.yaml
-            docker-compose-cache.json
+            ./app/docker-compose.yaml
+            ./app/docker-compose-cache.json
   
   research:
     runs-on: ubuntu-latest
