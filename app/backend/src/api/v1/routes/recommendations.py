@@ -13,7 +13,7 @@ def get_recommendation_service(request: Request) -> RecommendationService:
     return request.app.state.recommendation_service
 
 
-@router.post("/", response_model=RecommendationResponse)
+@router.post("", response_model=RecommendationResponse)
 async def recommend_papers(
     request: RecommendationRequest,
     db: Session = Depends(get_db),

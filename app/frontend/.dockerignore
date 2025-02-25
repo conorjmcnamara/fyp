@@ -1,7 +1,8 @@
 build/
 coverage/
 node_modules/
-src/*.test*
+src/**/*.test*
 .eslintignore
 .eslintrc.json
 .gitignore
+jest.setup.ts

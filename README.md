@@ -63,7 +63,6 @@ python -m src.utils.populate_db <path_to_papers_json_file>
 cd app/frontend
 
 npm install
-npm run build
 ```
 
 ### Usage

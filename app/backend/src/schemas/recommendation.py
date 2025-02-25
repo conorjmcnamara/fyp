@@ -19,6 +19,7 @@ class PaperResponse(BaseModel):
     abstract: str
     venue: str
     authors: List[AuthorResponse]
+    recommendation_score: float
 
 
 class RecommendationResponse(BaseModel):
