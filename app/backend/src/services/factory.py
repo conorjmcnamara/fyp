@@ -1,5 +1,5 @@
 from src.services.embedding import EmbeddingService
-from src.services.similarity_search import SimilaritySearchService
+from src.services.index_search import IndexSearchService
 from src.services.recommendation import RecommendationService
 from src.config.settings import (
     TEXT_EMBEDDING_MODEL_DIR,
@@ -26,5 +26,5 @@ def create_recommendation_service() -> RecommendationService:
         NUM_NODE_NEIGHBOURS,
         FUSION_MODEL_PATH
     )
-    search_service = SimilaritySearchService(FUSED_INDEX_PATH, FUSED_IDS_PATH)
+    search_service = IndexSearchService(FUSED_INDEX_PATH, FUSED_IDS_PATH)
     return RecommendationService(embedding_service, search_service)

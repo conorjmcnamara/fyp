@@ -1,4 +1,8 @@
-export const api = async <T>(baseUrl: string, endpoint: string, options: RequestInit = {}): Promise<T> => {
+export const api = async <T>(
+  baseUrl: string,
+  endpoint: string,
+  options: RequestInit = {}
+): Promise<T> => {
   const response = await fetch(`${baseUrl}/${endpoint}`, options);
 
   if (!response.ok) {
