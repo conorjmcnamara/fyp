@@ -96,6 +96,14 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
       
+      - name: Create .env files
+        uses: ./.github/actions/create-env
+        with:
+          backend_port: ${{ secrets.BACKEND_PORT }}
+          database_url: ${{ secrets.DATABASE_URL }}
+          frontend_port: ${{ secrets.FRONTEND_PORT }}
+          backend_url: ${{ secrets.BACKEND_URL }}
+      
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
       

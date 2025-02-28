@@ -15,6 +15,14 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+      
+      - name: Create .env files
+        uses: ./.github/actions/create-env
+        with:
+          backend_port: ${{ secrets.BACKEND_PORT }}
+          database_url: ${{ secrets.DATABASE_URL }}
+          frontend_port: ${{ secrets.FRONTEND_PORT }}
+          backend_url: ${{ secrets.BACKEND_URL }}
 
       - name: Login to Docker Hub
         uses: docker/login-action@v3
