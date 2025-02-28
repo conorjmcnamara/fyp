@@ -8,7 +8,8 @@ RUN npm install
 
 COPY src/ ./src
 COPY public/ ./public
-COPY .env config-overrides.js postcss.config.js tailwind.config.js tsconfig.json ./
+COPY --chown=node:node .env ./.env
+COPY config-overrides.js postcss.config.js tailwind.config.js tsconfig.json ./
 
 RUN npm run build
 
