@@ -7,7 +7,7 @@ RUN apt-get update && apt-get install -y \
 
 WORKDIR /app
 
-COPY requirements/base.txt requirements.txt
+COPY requirements/requirements.txt requirements.txt
 RUN pip install --no-cache-dir --prefix=/install -r requirements.txt
 
 # Stage 2: Final runtime image

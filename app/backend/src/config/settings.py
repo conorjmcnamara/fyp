@@ -1,6 +1,3 @@
-# Core constants
-DATABASE_URL = "sqlite:///data/db/papers.sqlite.db"
-
 # Embedding service constants
 TEXT_EMBEDDING_MODEL_DIR = "data/models/specter2/"
 BERT_MAX_TOKENS = 512

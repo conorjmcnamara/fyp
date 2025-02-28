@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
-import { fetchRecommendations } from '../../services/recommendationService';
-import Spinner from '../Spinner/Spinner';
+import { fetchRecommendations, PaperResponse } from '../../services/recommendationService';
 
 interface SearchFormProps {
-  onResults: (papers: any[]) => void;
+  onResults: (papers: PaperResponse[]) => void;
 }
 
 const SearchForm: React.FC<SearchFormProps> = ({ onResults }) => {
@@ -25,9 +24,11 @@ const SearchForm: React.FC<SearchFormProps> = ({ onResults }) => {
     try {
       const data = await fetchRecommendations(title, abstract);
       onResults(data.papers);
-    } catch (error) {
-      console.error('Failed to fetch recommendations', error);
-      setError('Failed to fetch recommendations. Please try again.');
+    } catch (error: unknown) {
+      const errorMsg = error instanceof Error
+        ? `Failed to fetch recommendations: ${error.message}`
+        : 'Failed to fetch recommendations';
+      setError(errorMsg);
     } finally {
       setLoading(false);
     }
@@ -42,8 +43,9 @@ const SearchForm: React.FC<SearchFormProps> = ({ onResults }) => {
       
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700">Title</label>
+          <label htmlFor="title" className="block text-sm font-medium text-gray-700">Title</label>
           <input
+            id="title"
             type="text"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
@@ -54,8 +56,11 @@ const SearchForm: React.FC<SearchFormProps> = ({ onResults }) => {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700">Abstract</label>
+          <label htmlFor="abstract" className="block text-sm font-medium text-gray-700">
+            Abstract
+          </label>
           <textarea
+            id="abstract"
             value={abstract}
             onChange={(e) => setAbstract(e.target.value)}
             className="
@@ -76,7 +81,16 @@ const SearchForm: React.FC<SearchFormProps> = ({ onResults }) => {
             items-center
           "
         >
-          {loading ? <Spinner /> : 'Search'}
+          {loading ? (
+            <div
+              className="
+                animate-spin inline-block size-6 border-[3px] border-t-transparent border-gray-200
+                rounded-full
+              "
+            />
+          ) : (
+            'Search'
+          )}
         </button>
       </form>
     </div>
