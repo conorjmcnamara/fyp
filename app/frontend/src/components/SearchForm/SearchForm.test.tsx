@@ -1,4 +1,4 @@
-import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { fetchRecommendations } from '../../services/recommendationService';
 import SearchForm from './SearchForm';
 
@@ -18,9 +18,7 @@ describe('SearchForm', () => {
   it('shows an error when both title and abstract are empty', async () => {
     render(<SearchForm onResults={jest.fn()} />);
 
-    await act(async () => {
-      fireEvent.click(screen.getByRole('button', { name: /Search/i }));
-    });
+    fireEvent.click(screen.getByRole('button', { name: /Search/i }));
 
     expect(
       await screen.findByText(/Either title or abstract must be provided./i)
@@ -31,26 +29,22 @@ describe('SearchForm', () => {
     render(<SearchForm onResults={jest.fn()} />);
   
     fireEvent.change(screen.getByLabelText(/Title/i), { target: { value: 'Some title' } });
-    await act(async () => {
-      fireEvent.click(screen.getByRole('button', { name: /Search/i }));
-    });
-  
-    expect(
+    fireEvent.click(screen.getByRole('button', { name: /Search/i }));
+
+    await waitFor(() => expect(
       screen.queryByText(/Either title or abstract must be provided./i)
-    ).not.toBeInTheDocument();
+    ).not.toBeInTheDocument());
   });
   
   it('does not show an error when abstract is provided but title is empty', async () => {
     render(<SearchForm onResults={jest.fn()} />);
   
     fireEvent.change(screen.getByLabelText(/Abstract/i), { target: { value: 'Some abstract' } });
-    await act(async () => {
-      fireEvent.click(screen.getByRole('button', { name: /Search/i }));
-    });
+    fireEvent.click(screen.getByRole('button', { name: /Search/i }));
   
-    expect(
+    await waitFor(() => expect(
       screen.queryByText(/Either title or abstract must be provided./i)
-    ).not.toBeInTheDocument();
+    ).not.toBeInTheDocument());
   });
 
   it('does not show an error when title or abstract is provided', async () => {
@@ -58,13 +52,11 @@ describe('SearchForm', () => {
   
     fireEvent.change(screen.getByLabelText(/Title/i), { target: { value: 'Some title' } });
     fireEvent.change(screen.getByLabelText(/Abstract/i), { target: { value: 'Some abstract' } });
-    await act(async () => {
-      fireEvent.click(screen.getByRole('button', { name: /Search/i }));
-    });
+    fireEvent.click(screen.getByRole('button', { name: /Search/i }));
   
-    expect(
+    await waitFor(() => expect(
       screen.queryByText(/Either title or abstract must be provided./i)
-    ).not.toBeInTheDocument();
+    ).not.toBeInTheDocument());
   });
   
   it('calls onResults when recommendations are fetched successfully', async () => {
@@ -75,9 +67,7 @@ describe('SearchForm', () => {
     render(<SearchForm onResults={mockOnResults} />);
 
     fireEvent.change(screen.getByLabelText(/Title/i), { target: { value: 'Some title' } });
-    await act(async () => {
-      fireEvent.click(screen.getByRole('button', { name: /Search/i }));
-    });
+    fireEvent.click(screen.getByRole('button', { name: /Search/i }));
 
     await waitFor(() => expect(mockOnResults).toHaveBeenCalledWith(mockPapers));
   });
@@ -89,14 +79,10 @@ describe('SearchForm', () => {
     render(<SearchForm onResults={mockOnResults} />);
 
     fireEvent.change(screen.getByLabelText(/Title/i), { target: { value: 'Some title' } });
-    await act(async () => {
-      fireEvent.click(screen.getByRole('button', { name: /Search/i }));
-    });
+    fireEvent.click(screen.getByRole('button', { name: /Search/i }));
 
     expect(
-      await screen.findByText(
-        /Failed to fetch recommendations: Network Error/i
-      )
+      await screen.findByText(/Failed to fetch recommendations: Network Error/i)
     ).toBeInTheDocument();
   });
 
@@ -109,9 +95,7 @@ describe('SearchForm', () => {
       render(<SearchForm onResults={mockOnResults} />);
   
       fireEvent.change(screen.getByLabelText(/Title/i), { target: { value: 'Some title' } });
-      await act(async () => {
-        fireEvent.click(screen.getByRole('button', { name: /Search/i }));
-      });
+      fireEvent.click(screen.getByRole('button', { name: /Search/i }));
   
       expect(await screen.findByText(/Failed to fetch recommendations/i)).toBeInTheDocument();
     }

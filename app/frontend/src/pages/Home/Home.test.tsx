@@ -1,4 +1,4 @@
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import Home from './Home';
 import { PaperResponse } from '../../services/recommendationService';
 
@@ -53,7 +53,7 @@ describe('Home', () => {
 
     fireEvent.click(screen.getByText('Search'));
 
-    await waitFor(() => expect(screen.getByText('Paper 1')).toBeInTheDocument());
+    expect(await screen.findByText('Paper 1')).toBeInTheDocument();
   });
 
   it('does not render RecommendationResults when papers is empty', () => {

@@ -12,5 +12,6 @@ def client():
     from src.app import app
     return TestClient(app)
 
+
 def test_app(client: TestClient):
     assert True
