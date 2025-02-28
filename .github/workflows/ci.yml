@@ -111,7 +111,7 @@ jobs:
         uses: docker/bake-action@v6
         with:
           push: false
-          source: .
+          source: ./app
           workdir: ./app
           files: |-
             ./app/docker-compose.yaml
