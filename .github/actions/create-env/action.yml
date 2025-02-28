@@ -17,11 +17,13 @@ runs:
   using: 'composite'
   steps:
     - name: Create .env for the backend
+      shell: bash
       run: |
         echo "BACKEND_PORT=${{ inputs.backend_port }}" >> ./backend/.env
         echo "DATABASE_URL=${{ inputs.database_url }}" >> ./backend/.env
     
     - name: Create .env for the frontend
+      shell: bash
       run: |
         echo "FRONTEND_PORT=${{ inputs.frontend_port }}" >> ./frontend/.env
         echo "REACT_APP_BACKEND_URL=${{ inputs.backend_url }}" >> ./frontend/.env
