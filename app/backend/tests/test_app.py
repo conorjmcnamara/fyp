@@ -4,7 +4,7 @@ from fastapi.testclient import TestClient
 
 @pytest.fixture(autouse=True)
 def mock_env_variables(monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.setenv("DATABASE_URL", "sqlite:///test.db")
+    monkeypatch.setenv("DATABASE_URL", "sqlite:///example.db")
 
 
 @pytest.fixture
