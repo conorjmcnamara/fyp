@@ -12,7 +12,7 @@ inputs:
     required: true
   backend_url:
     description: 'The backend URL'
-    true
+    required: true
 runs:
   using: 'composite'
   steps:
