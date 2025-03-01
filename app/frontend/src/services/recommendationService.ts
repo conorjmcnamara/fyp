@@ -1,4 +1,3 @@
-import { api } from '../utils/api';
 import config from '../config/config';
 
 export interface AuthorResponse {
@@ -24,13 +23,17 @@ export const fetchRecommendations = async (
   title: string,
   abstract: string
 ): Promise<RecommendationResponse> => {
-  const response = await api<RecommendationResponse>(config.apiBaseUrl, 'api/v1/recommendations', {
+  const response = await fetch(`${config.apiBaseUrl}/api/v1/recommendations`, {
     method: 'POST',
     body: JSON.stringify({ title, abstract }),
     headers: {
       'Content-Type': 'application/json',
     },
   });
+
+  if (!response.ok) {
+    throw new Error(`Request failed with status ${response.status}`);
+  }
   
-  return response;
+  return response.json();
 };

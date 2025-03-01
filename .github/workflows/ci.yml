@@ -23,15 +23,15 @@ jobs:
           python-version: '3.9'
           cache: 'pip'
           cache-dependency-path: |
-            ./app/backend/requirements/base.txt
-            ./app/backend/requirements/dev.txt
+            ./app/backend/requirements/requirements.txt
+            ./app/backend/requirements/requirements.dev.txt
 
       - name: Install dependencies
         working-directory: ./app/backend/requirements
         run: |
           python -m pip install --upgrade pip
-          pip install --no-cache-dir -r base.txt
-          pip install --no-cache-dir -r dev.txt
+          pip install --no-cache-dir -r requirements.txt
+          pip install --no-cache-dir -r requirements.dev.txt
       
       - name: Run linter
         working-directory: ./app/backend
@@ -96,6 +96,14 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
       
+      - name: Create .env files
+        uses: ./.github/actions/create-env
+        with:
+          backend_port: ${{ secrets.BACKEND_PORT }}
+          database_url: ${{ secrets.DATABASE_URL }}
+          frontend_port: ${{ secrets.FRONTEND_PORT }}
+          backend_url: ${{ secrets.BACKEND_URL }}
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
       
@@ -107,7 +115,7 @@ jobs:
           files: |-
             ./app/docker-compose.yaml
             ./app/docker-compose-cache.json
-  
+
   research:
     runs-on: ubuntu-latest
 
@@ -121,13 +129,13 @@ jobs:
           python-version: '3.9'
           cache: 'pip'
           cache-dependency-path: |
-            ./research/requirements/dev.txt
+            ./research/requirements/requirements.dev.txt
       
       - name: Install dependencies
         working-directory: ./research/requirements
         run: |
           python -m pip install --upgrade pip
-          pip install --no-cache-dir -r dev.txt
+          pip install --no-cache-dir -r requirements.dev.txt
       
       - name: Run linter
         working-directory: ./research

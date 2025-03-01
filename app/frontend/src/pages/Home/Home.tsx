@@ -4,7 +4,7 @@ import SearchForm from '../../components/SearchForm/SearchForm';
 import Results from '../../components/RecommendationResults/RecommendationResults';
 import { PaperResponse } from '../../services/recommendationService';
 
-const HomePage: React.FC = () => {
+const Home: React.FC = () => {
   const [papers, setPapers] = useState<PaperResponse[]>([]);
 
   const handleResults = (newPapers: PaperResponse[]) => {
@@ -30,4 +30,4 @@ const HomePage: React.FC = () => {
   );
 };
 
-export default HomePage;
+export default Home;

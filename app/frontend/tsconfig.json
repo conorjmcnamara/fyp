@@ -24,5 +24,8 @@
   "include": [
     "src/**/*",
     "jest.setup.ts"
+  ],
+  "exclude": [
+    "src/**/*.test*"
   ]
 }

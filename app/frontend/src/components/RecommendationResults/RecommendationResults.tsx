@@ -3,27 +3,25 @@ import { PaperResponse } from '../../services/recommendationService';
 
 interface RecommendationResultsProps {
   papers: PaperResponse[];
+  papersPerPage?: number;
 }
 
-const RecommendationResults: React.FC<RecommendationResultsProps> = ({ papers }) => {
+const RecommendationResults: React.FC<RecommendationResultsProps> = (
+  { papers, papersPerPage = 5 }
+) => {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [expandedPaperId, setExpandedPaperId] = useState<string | null>(null);
   
-  const papersPerPage = 5;
   const indexOfLastPaper = currentPage * papersPerPage;
   const indexOfFirstPaper = indexOfLastPaper - papersPerPage;
   const currentPapers = papers.slice(indexOfFirstPaper, indexOfLastPaper);
 
   const goToNextPage = () => {
-    if (currentPage * papersPerPage < papers.length) {
-      setCurrentPage(currentPage + 1);
-    }
+    setCurrentPage(currentPage + 1);
   };
 
   const goToPrevPage = () => {
-    if (currentPage > 1) {
-      setCurrentPage(currentPage - 1);
-    }
+    setCurrentPage(currentPage - 1);
   };
 
   const toggleExpandedPaper = (id: string) => {

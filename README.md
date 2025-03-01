@@ -4,7 +4,7 @@
 ```sh
 cd research/requirements
 
-pip install -r base.txt
+pip install -r requirements.txt
 ```
 
 Notebooks that require additional dependencies include the necessary installation commands.
@@ -14,7 +14,7 @@ To install development dependencies (for linting), run:
 ```sh
 cd research/requirements
 
-pip install -r dev.txt
+pip install -r requirements.dev.txt
 ```
 
 ### Usage
@@ -34,11 +34,19 @@ flake8 .
 
 ## Running the Application
 ### Installation
+Copy the `.env.example` files to `.env` in the `app/backend` and `app/frontend` directories:
+
+```sh
+cp app/backend/.env.example app/backend/.env
+
+cp app/frontend/.env.example app/frontend/.env
+```
+
 #### Backend
 ```sh
 cd app/backend/requirements
 
-pip install -r base.txt
+pip install -r requirements.txt
 ```
 
 To install development dependencies (for linting and testing), run:
@@ -46,11 +54,11 @@ To install development dependencies (for linting and testing), run:
 ```sh
 cd app/backend/requirements
 
-pip install -r dev.txt
+pip install -r requirements.dev.txt
 ```
 
 #### Database
-Run the following script to initalize the SQLite database and populate it with papers:
+Set the `DATABASE_URL` environment variable in `app/backend/.env`. Then, run the following script to populate the SQLite database with papers:
 
 ```sh
 cd app/backend
@@ -66,7 +74,7 @@ npm install
 ```
 
 ### Usage
-Set the `BACKEND_PORT` and `FRONTEND_PORT` in the `.env` files located in `app/backend/` and `app/frontend/`, respectively, defaulting to ports 8000 and 3000.
+Set the `BACKEND_PORT` environment variable in `app/backend/.env`, and `FRONTEND_PORT` and `BACKEND_URL` environment variables in `app/frontend/.env`.
 
 #### Docker
 ##### Startup

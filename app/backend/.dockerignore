@@ -3,6 +3,7 @@ tests/
 __pycache__
 .pytest_cache
 .coverage
+.env.example
 .flake8
 coverage.xml
 pytest.ini
