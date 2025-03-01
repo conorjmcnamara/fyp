@@ -21,6 +21,6 @@ FROM node:18-alpine
 WORKDIR /app
 
 COPY --from=builder /app/build /app/build
-RUN npm install -g --omit=dev serve
+RUN npm install -g serve
 
 CMD ["sh", "-c", "serve -s build -p $FRONTEND_PORT"]
