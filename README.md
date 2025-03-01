@@ -34,6 +34,14 @@ flake8 .
 
 ## Running the Application
 ### Installation
+Copy the `.env.example` files to `.env` in the `app/backend` and `app/frontend` directories:
+
+```sh
+cp app/backend/.env.example app/backend/.env
+
+cp app/frontend/.env.example app/frontend/.env
+```
+
 #### Backend
 ```sh
 cd app/backend/requirements
@@ -66,7 +74,7 @@ npm install
 ```
 
 ### Usage
-Set the `BACKEND_PORT` and `FRONTEND_PORT` environment variables in `app/backend/.env` and `app/frontend/.env`, respectively, defaulting to ports 8000 and 3000.
+Set the `BACKEND_PORT` environment variable in `app/backend/.env`, and `FRONTEND_PORT` and `BACKEND_URL` environment variables in `app/frontend/.env`.
 
 #### Docker
 ##### Startup
