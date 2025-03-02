@@ -5,10 +5,5 @@ from src.app import app
 client = TestClient(app)
 
 
-@pytest.fixture(autouse=True)
-def mock_env_variables(monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.setenv("DATABASE_URL", "sqlite:///example.db")
-
-
-def test_app(client: TestClient):
+def test_app():
     assert True
