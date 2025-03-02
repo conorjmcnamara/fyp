@@ -40,8 +40,6 @@ jobs:
       
       - name: Run tests
         working-directory: ./app/backend
-        env:
-          DATABASE_URL: "sqlite:///example.db"
         run: |
           pytest
         
