@@ -23,4 +23,5 @@ WORKDIR /app
 COPY --from=builder /app/build /app/build
 RUN npm install -g --omit=dev serve
 
+EXPOSE ${FRONTEND_PORT}
 CMD ["sh", "-c", "serve -s build -p $FRONTEND_PORT"]

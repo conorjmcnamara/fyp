@@ -1,9 +1,12 @@
+import os
 import sys
 import json
+from dotenv import load_dotenv
 from uuid import UUID
 from sqlalchemy.orm import Session
 from typing import Dict, Any, List, Tuple
-from src.core.database import Base, engine, get_db
+from src.models.base import Base
+from src.core.database import engine, get_db
 from src.models.paper import Paper
 from src.models.venue import Venue
 from src.models.author import Author
@@ -13,7 +16,8 @@ from src.models.citation import Citation
 PAPERS_BATCH_THRESHOLD = 300
 
 
-def init_db() -> None:
+def init_db(db_path: str) -> None:
+    os.makedirs(os.path.dirname(db_path.split(":///", 1)[1]), exist_ok=True)
     Base.metadata.create_all(engine)
 
 
@@ -174,5 +178,6 @@ if __name__ == "__main__":
         print("Error: Expected a path to a papers JSON file.")
         sys.exit(1)
 
-    init_db()
+    load_dotenv()
+    init_db(os.getenv("DATABASE_URL"))
     populate_db(sys.argv[1])

@@ -3,9 +3,9 @@ import uuid
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from typing import List
-from src.core.database import Base
+from src.models.base import Base
 
-if typing.TYPE_CHECKING:
+if typing.TYPE_CHECKING:  # pragma: no cover
     from src.models.paper import Paper
 
 

@@ -18,4 +18,5 @@ WORKDIR /app
 COPY --from=builder /install /usr/local/
 COPY src/ ./src
 
+EXPOSE ${BACKEND_PORT}
 CMD ["python", "-m", "src.main"]

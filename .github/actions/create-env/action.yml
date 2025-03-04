@@ -7,6 +7,9 @@ inputs:
   database_url:
     description: 'The database URL'
     required: true
+  frontend_url:
+    description: 'The frontend URL'
+    required: true
   frontend_port:
     description: 'The frontend port'
     required: true
@@ -21,7 +24,8 @@ runs:
       run: |
         echo "BACKEND_PORT=${{ inputs.backend_port }}" >> ./app/backend/.env
         echo "DATABASE_URL=${{ inputs.database_url }}" >> ./app/backend/.env
-    
+        echo "FRONTEND_URL=${{ inputs.frontend_url }}" >> ./app/backend/.env
+
     - name: Create .env for the frontend
       shell: bash
       run: |

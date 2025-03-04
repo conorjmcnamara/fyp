@@ -74,7 +74,7 @@ npm install
 ```
 
 ### Usage
-Set the `BACKEND_PORT` environment variable in `app/backend/.env`, and `FRONTEND_PORT` and `BACKEND_URL` environment variables in `app/frontend/.env`.
+Set the `BACKEND_PORT` and `FRONTEND_URL` environment variables in `app/backend/.env`, and `FRONTEND_PORT` and `BACKEND_URL` environment variables in `app/frontend/.env`.
 
 #### Docker
 ##### Startup
