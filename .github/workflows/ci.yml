@@ -101,6 +101,7 @@ jobs:
         with:
           backend_port: ${{ secrets.BACKEND_PORT }}
           database_url: ${{ secrets.DATABASE_URL }}
+          frontend_url: ${{ secrets.FRONTEND_URL }}
           frontend_port: ${{ secrets.FRONTEND_PORT }}
           backend_url: ${{ secrets.BACKEND_URL }}
 

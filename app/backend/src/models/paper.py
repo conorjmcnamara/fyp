@@ -6,7 +6,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from typing import List
 from src.core.database import Base
 
-if typing.TYPE_CHECKING:
+if typing.TYPE_CHECKING:  # pragma: no cover
     from src.models.venue import Venue
     from src.models.author import Author
     from src.models.citation import Citation

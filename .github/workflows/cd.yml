@@ -6,7 +6,7 @@ on:
       - 'main'
 
 env:
-  TAG_NAME: ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_REPO }}
+  TAG: ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_REPO }}
   
 jobs:
   docker-hub:
@@ -21,6 +21,7 @@ jobs:
         with:
           backend_port: ${{ secrets.BACKEND_PORT }}
           database_url: ${{ secrets.DATABASE_URL }}
+          frontend_url: ${{ secrets.FRONTEND_URL }}
           frontend_port: ${{ secrets.FRONTEND_PORT }}
           backend_url: ${{ secrets.BACKEND_URL }}
 
@@ -42,5 +43,5 @@ jobs:
             ./app/docker-compose.yaml
             ./app/docker-compose-cache.json
           set: |
-            backend.tags=${{ env.TAG_NAME }}:backend-latest
-            frontend.tags=${{ env.TAG_NAME }}:frontend-latest
+            backend.tags=${{ env.TAG }}:backend-latest
+            frontend.tags=${{ env.TAG }}:frontend-latest
