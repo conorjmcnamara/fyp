@@ -19,7 +19,6 @@ class EmbeddingService:
         num_node_neighbours: int,
         fusion_model_path: str
     ):
-        raise Exception()
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         self.text_model = self._load_text_model(text_model_dir)
         self.tokenizer = AutoTokenizer.from_pretrained(text_model_dir)
