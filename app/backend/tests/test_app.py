@@ -9,9 +9,11 @@ from src.app import app
 
 @pytest.fixture()
 def mock_create_recommendation_service() -> Generator[MagicMock, None, None]:
-    with patch("src.services.factory.create_recommendation_service") as mock:
-        mock.return_value = MagicMock(spec=RecommendationService)
-        yield mock
+    with patch(
+        "src.services.factory.create_recommendation_service",
+        return_value=MagicMock(spec=RecommendationService)
+    ) as mock_create_recommendation_service:
+        yield mock_create_recommendation_service
 
 
 @pytest.fixture()
@@ -26,23 +28,21 @@ def mock_frontend_url() -> Generator[None, None, None]:
     del os.environ["FRONTEND_URL"]
 
 
-def test_lifespan_initialization(
-    mock_create_recommendation_service: Generator[MagicMock, None, None]
-):
+def test_lifespan_initialization(mock_create_recommendation_service: MagicMock):
     with TestClient(app):
         mock_create_recommendation_service.assert_called_once()
         recommendation_service = app.state.recommendation_service
         assert isinstance(recommendation_service, RecommendationService)
 
 
-def test_cors_valid(client: TestClient, mock_frontend_url: Generator[None, None, None]):
+def test_cors_valid(client: TestClient, mock_frontend_url: None):
     response = client.get("/api/health", headers={"Origin": "http://localhost:3000"})
 
     assert response.status_code == 200
     assert response.headers["Access-Control-Allow-Origin"] == "http://localhost:3000"
 
 
-def test_cors_invalid(client: TestClient, mock_frontend_url: Generator[None, None, None]):
+def test_cors_invalid(client: TestClient, mock_frontend_url: None):
     response = client.get("/api/health", headers={"Origin": "http://invalid-origin.com"})
 
     assert response.status_code == 200

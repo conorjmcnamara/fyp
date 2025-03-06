@@ -55,7 +55,7 @@ def fake_db() -> Generator[Session, None, None]:
     db.close()
 
 
-def test_get_papers_by_ids(fake_db: Generator[Session, None, None]):
+def test_get_papers_by_ids(fake_db: Session):
     ids = [
         UUID("0abc9de7-e047-44fc-998d-4bf02b9bc9ab"),
         UUID("3b2a5324-7b66-4101-9982-3a26e82afa3d")
@@ -92,7 +92,7 @@ def test_get_papers_by_ids(fake_db: Generator[Session, None, None]):
     assert paper2.cited_papers[0].citing_paper_id == paper1.id
 
 
-def test_get_papers_by_ids_missing(fake_db: Generator[Session, None, None]):
+def test_get_papers_by_ids_missing(fake_db: Session):
     missing_ids = [
         UUID("00000000-0000-0000-0000-000000000000"),
         UUID("11111111-1111-1111-1111-111111111111")

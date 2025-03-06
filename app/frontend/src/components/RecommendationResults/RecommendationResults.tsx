@@ -30,32 +30,34 @@ const RecommendationResults: React.FC<RecommendationResultsProps> = (
 
   return (
     <div>
-      <h2 className="text-2xl font-semibold mb-6">Recommended Papers</h2>
+      <h2 className="text-2xl font-semibold mb-6">Recommended Citations</h2>
 
       {/* Pagination controls */}
       <div className="flex justify-center space-x-2 mb-4">
-        <button
-          className="px-3 py-1 bg-gray-300 rounded-lg hover:bg-gray-400"
-          onClick={goToPrevPage}
-          disabled={currentPage === 1}
-        >
-          Prev
-        </button>
+        {currentPage > 1 && (
+          <button
+            className="px-3 py-1 bg-gray-300 rounded-lg hover:bg-gray-400"
+            onClick={goToPrevPage}
+          >
+            Prev
+          </button>
+        )}
 
         <span className="px-3 py-1 bg-blue-500 text-white rounded-lg">
           {currentPage}
         </span>
 
-        <button
-          className="px-3 py-1 bg-gray-300 rounded-lg hover:bg-gray-400"
-          onClick={goToNextPage}
-          disabled={currentPage * papersPerPage >= papers.length}
-        >
-          Next
-        </button>
+        {currentPage * papersPerPage < papers.length && (
+          <button
+            className="px-3 py-1 bg-gray-300 rounded-lg hover:bg-gray-400"
+            onClick={goToNextPage}
+          >
+            Next
+          </button>
+        )}
       </div>
 
-      {/* Paper list */}
+      {/* Papers list */}
       <div className="space-y-6">
         {currentPapers.map((paper) => (
           <div key={paper.id} className="p-6 bg-white shadow-md rounded-lg">
