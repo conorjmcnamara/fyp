@@ -8,6 +8,7 @@ interface SearchFormProps {
 const SearchForm: React.FC<SearchFormProps> = ({ onResults }) => {
   const [title, setTitle] = useState<string>('');
   const [abstract, setAbstract] = useState<string>('');
+  const [numRecommendations, setNumRecommendations] = useState<number>(10);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -22,7 +23,7 @@ const SearchForm: React.FC<SearchFormProps> = ({ onResults }) => {
 
     setLoading(true);
     try {
-      const data = await fetchRecommendations(title, abstract);
+      const data = await fetchRecommendations(title, abstract, numRecommendations);
       onResults(data.papers);
     } catch (error: unknown) {
       const errorMsg = error instanceof Error
@@ -41,7 +42,8 @@ const SearchForm: React.FC<SearchFormProps> = ({ onResults }) => {
         Enter the title or abstract of your research to find relevant citations.
       </p>
       
-      <form onSubmit={handleSubmit} className="space-y-4">
+      {/* Title field */}
+      <form onSubmit={handleSubmit} className="space-y-5">
         <div>
           <label htmlFor="title" className="block text-sm font-medium text-gray-700">Title</label>
           <input
@@ -49,12 +51,11 @@ const SearchForm: React.FC<SearchFormProps> = ({ onResults }) => {
             type="text"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            className="
-              w-full p-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500
-            "
+            className="w-full p-2 border border-gray-300 rounded-lg"
           />
         </div>
 
+        {/* Abstract field */}
         <div>
           <label htmlFor="abstract" className="block text-sm font-medium text-gray-700">
             Abstract
@@ -63,17 +64,33 @@ const SearchForm: React.FC<SearchFormProps> = ({ onResults }) => {
             id="abstract"
             value={abstract}
             onChange={(e) => setAbstract(e.target.value)}
-            className="
-              w-full p-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500
-            "
+            className="w-full p-2 border border-gray-300 rounded-lg"
             rows={4}
           />
+        </div>
+
+        {/* Number of Recommendations dropdown */}
+        <div>
+          <label htmlFor="numRecommendations" className="block text-sm font-medium text-gray-700">
+            Number of Recommendations
+          </label>
+          <select
+            id="numRecommendations"
+            value={numRecommendations}
+            onChange={(e) => setNumRecommendations(Number(e.target.value))}
+            className="w-full p-2 border border-gray-300 rounded-lg"
+          >
+            <option value={10}>10</option>
+            <option value={25}>25</option>
+            <option value={50}>50</option>
+          </select>
         </div>
 
         {error && (
           <p className="text-red-600 text-sm font-medium">{error}</p>
         )}
 
+        {/* Search button */}
         <button 
           type="submit" 
           className="

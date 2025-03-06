@@ -21,11 +21,12 @@ export interface RecommendationResponse {
 
 export const fetchRecommendations = async (
   title: string,
-  abstract: string
+  abstract: string,
+  numRecommendations: number
 ): Promise<RecommendationResponse> => {
   const response = await fetch(`${config.apiBaseUrl}/api/v1/recommendations`, {
     method: 'POST',
-    body: JSON.stringify({ title, abstract }),
+    body: JSON.stringify({ title, abstract, numRecommendations }),
     headers: {
       'Content-Type': 'application/json',
     },

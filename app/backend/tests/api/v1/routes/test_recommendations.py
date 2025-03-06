@@ -4,6 +4,8 @@ from fastapi.testclient import TestClient
 from typing import Generator
 from src.services.recommendation import RecommendationService
 from src.app import app
+from src.config.settings import NUM_RECOMMENDATIONS_MIN, NUM_RECOMMENDATIONS_MAX
+
 
 mock_recommendations = [
     {
@@ -36,8 +38,9 @@ def client(mock_recommendation_service: RecommendationService) -> TestClient:
 
 def test_recommend_papers(client: TestClient, mock_recommendation_service: RecommendationService):
     request_data = {
-        "title": "Some title",
-        "abstract": "Some abstract"
+        "title": "Example title",
+        "abstract": "Example abstract",
+        "numRecommendations": 10
     }
 
     response = client.post("/api/v1/recommendations", json=request_data)
@@ -56,14 +59,49 @@ def test_recommend_papers(client: TestClient, mock_recommendation_service: Recom
     )
 
 
-def test_recommend_papers_invalid_data(client: TestClient):
+def test_recommend_papers_invalid_types(client: TestClient):
     request_data = {
         "title": None,
-        "abstract": "Some abstract"
+        "abstract": "Example abstract",
+        "numRecommendations": 10
     }
 
     response = client.post("/api/v1/recommendations", json=request_data)
     assert response.status_code == 422
+
+
+def test_recommend_papers_num_recommendations_less_than_min(client: TestClient):
+    request_data = {
+        "title": "Example title",
+        "abstract": "Example abstract",
+        "numRecommendations": NUM_RECOMMENDATIONS_MIN - 1
+    }
+
+    response = client.post("/api/v1/recommendations", json=request_data)
+    assert response.status_code == 422
+
+    data = response.json()
+    assert data["detail"][0]["msg"] == (
+        "Value error, numRecommendations must be between " +
+        f"{NUM_RECOMMENDATIONS_MIN} and {NUM_RECOMMENDATIONS_MAX}"
+    )
+
+
+def test_recommend_papers_num_recommendations_greater_than_max(client: TestClient):
+    request_data = {
+        "title": "Example title",
+        "abstract": "Example abstract",
+        "numRecommendations": NUM_RECOMMENDATIONS_MAX + 1
+    }
+
+    response = client.post("/api/v1/recommendations", json=request_data)
+    assert response.status_code == 422
+
+    data = response.json()
+    assert data["detail"][0]["msg"] == (
+        "Value error, numRecommendations must be between " +
+        f"{NUM_RECOMMENDATIONS_MIN} and {NUM_RECOMMENDATIONS_MAX}"
+    )
 
 
 def test_recommend_papers_exception(
@@ -72,8 +110,9 @@ def test_recommend_papers_exception(
 ):
     mock_recommendation_service.recommend.side_effect = Exception("Internal Server Error")
     request_data = {
-        "title": "Some title",
-        "abstract": "Some abstract"
+        "title": "Example title",
+        "abstract": "Example abstract",
+        "numRecommendations": 10
     }
 
     response = client.post("/api/v1/recommendations", json=request_data)

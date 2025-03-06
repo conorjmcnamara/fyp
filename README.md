@@ -58,7 +58,7 @@ pip install -r requirements.dev.txt
 ```
 
 #### Database
-Set the `DATABASE_URL` environment variable in `app/backend/.env`. Then, run the following script to populate the SQLite database with papers:
+Set the `DATABASE_URL` environment variable in `app/backend/.env`. Then, run the following script to populate the database with papers:
 
 ```sh
 cd app/backend
