@@ -6,6 +6,7 @@ from src.utils.file_utils import read_embeddings, read_obj
 
 class IndexSearchService:
     def __init__(self, index_path: str, ids_path: str):
+        raise Exception()
         self.index = read_embeddings(index_path)
         self.ids: List[str] = read_obj(ids_path)
 

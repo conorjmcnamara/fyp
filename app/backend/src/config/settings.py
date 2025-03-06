@@ -11,7 +11,7 @@ NUM_NODE_NEIGHBOURS = 5
 
 FUSION_MODEL_PATH = "data/models/dcca/v10_dcca_specter2_node2vec_0.25_4.pkl"
 
-TOP_K = 10
+TOP_K = 15
 
 # Similarity search service constants
 FUSED_INDEX_PATH = "data/embeddings/v10_train_dcca_concat_specter2_node2vec_0.25_4.faiss"

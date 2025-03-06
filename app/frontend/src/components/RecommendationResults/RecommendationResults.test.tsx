@@ -31,7 +31,23 @@ describe('RecommendationResults', () => {
     expect(screen.queryByText(/Paper 2/i)).not.toBeInTheDocument();
   });
 
-  it('paginates the next button correctly', () => {
+  it('does not show the Prev button on the first page', () => {
+    render(<RecommendationResults papers={mockPapers} papersPerPage={1} />);
+    
+    expect(screen.queryByRole('button', { name: /Prev/i })).toBeNull();
+    expect(screen.getByRole('button', { name: /Next/i })).toBeInTheDocument();
+  });
+
+  it('does not show the Next button on the last page', () => {
+    render(<RecommendationResults papers={mockPapers} papersPerPage={1} />);
+    
+    fireEvent.click(screen.getByRole('button', { name: /Next/i }));
+
+    expect(screen.queryByRole('button', { name: /Next/i })).toBeNull();
+    expect(screen.getByRole('button', { name: /Prev/i })).toBeInTheDocument();
+  });
+
+  it('paginates correctly', () => {
     render(<RecommendationResults papers={mockPapers} papersPerPage={1} />);
 
     fireEvent.click(screen.getByRole('button', { name: /Next/i }));
@@ -39,17 +55,8 @@ describe('RecommendationResults', () => {
     expect(screen.queryByText(/Paper 1/i)).not.toBeInTheDocument();
     expect(screen.getByText(/Paper 2/i)).toBeInTheDocument();
 
-    expect(screen.getByRole('button', { name: /Next/i })).toBeDisabled();
-  });
-
-  it('paginates the prev button correctly', () => {
-    render(<RecommendationResults papers={mockPapers} papersPerPage={1} />);
-
-    expect(screen.getByRole('button', { name: /Prev/i })).toBeDisabled();
-
-    fireEvent.click(screen.getByRole('button', { name: /Next/i }));
     fireEvent.click(screen.getByRole('button', { name: /Prev/i }));
-
+    
     expect(screen.getByText(/Paper 1/i)).toBeInTheDocument();
     expect(screen.queryByText(/Paper 2/i)).not.toBeInTheDocument();
   });
