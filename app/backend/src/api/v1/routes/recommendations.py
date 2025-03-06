@@ -3,7 +3,6 @@ from sqlalchemy.orm import Session
 from src.services.recommendation import RecommendationService
 from src.schemas.recommendation import RecommendationRequest, RecommendationResponse, PaperResponse
 from src.core.database import get_db
-from src.config.settings import TOP_K
 
 
 router = APIRouter(prefix="/recommendations", tags=["Recommendations"])
@@ -24,7 +23,7 @@ async def recommend_papers(
             db,
             request.title,
             request.abstract,
-            TOP_K
+            request.numRecommendations
         )
         return RecommendationResponse(
             papers=[PaperResponse(**paper) for paper in recommended_papers]

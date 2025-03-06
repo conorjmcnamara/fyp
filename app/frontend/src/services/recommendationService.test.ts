@@ -28,12 +28,18 @@ describe('fetchRecommendations', () => {
       json: async () => mockResponse
     });
 
-    const result = await fetchRecommendations('Example title', 'Example abstract');
+    const result = await fetchRecommendations('Example title', 'Example abstract', 10);
 
     expect(result).toEqual(mockResponse);
     expect(fetch).toHaveBeenCalledWith(`${config.apiBaseUrl}/api/v1/recommendations`, {
       method: 'POST',
-      body: JSON.stringify({ title: 'Example title', abstract: 'Example abstract' }),
+      body: JSON.stringify(
+        {
+          title: 'Example title',
+          abstract: 'Example abstract',
+          numRecommendations: 10
+        }
+      ),
       headers: {
         'Content-Type': 'application/json',
       },
@@ -47,7 +53,7 @@ describe('fetchRecommendations', () => {
       statusText: 'Internal Server Error'
     });
 
-    await expect(fetchRecommendations('Example title', 'Example abstract')).rejects.toThrow(
+    await expect(fetchRecommendations('Example title', 'Example abstract', 10)).rejects.toThrow(
       'Request failed with status 500'
     );
   });
@@ -60,7 +66,7 @@ describe('fetchRecommendations', () => {
       }
     });
 
-    await expect(fetchRecommendations('Example title', 'Example abstract')).rejects.toThrow(
+    await expect(fetchRecommendations('Example title', 'Example abstract', 10)).rejects.toThrow(
       'Invalid JSON'
     );
   });
@@ -68,7 +74,7 @@ describe('fetchRecommendations', () => {
   it('should throw an error if fetch fails due to network issues', async () => {
     (fetch as jest.Mock).mockRejectedValueOnce(new Error('Network Error'));
 
-    await expect(fetchRecommendations('Example title', 'Example abstract')).rejects.toThrow(
+    await expect(fetchRecommendations('Example title', 'Example abstract', 10)).rejects.toThrow(
       'Network Error'
     );
   });
