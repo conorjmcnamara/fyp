@@ -1,4 +1,4 @@
-from pydantic import BaseModel, validator
+from pydantic import BaseModel, field_validator
 from typing import List
 from src.config.settings import NUM_RECOMMENDATIONS_MIN, NUM_RECOMMENDATIONS_MAX
 
@@ -8,11 +8,12 @@ class RecommendationRequest(BaseModel):
     abstract: str
     numRecommendations: int
 
-    @validator("numRecommendations")
+    @field_validator("numRecommendations")
+    @classmethod
     def validate_num_recommendations(cls, v: int) -> int:
         if not (NUM_RECOMMENDATIONS_MIN <= v <= NUM_RECOMMENDATIONS_MAX):
             raise ValueError(
-                f"numRecommendations must be between {NUM_RECOMMENDATIONS_MIN} and " +
+                f"numRecommendations must be between {NUM_RECOMMENDATIONS_MIN} and "
                 f"{NUM_RECOMMENDATIONS_MAX}"
             )
         return v

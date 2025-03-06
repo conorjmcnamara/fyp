@@ -82,7 +82,7 @@ def test_recommend_papers_num_recommendations_less_than_min(client: TestClient):
 
     data = response.json()
     assert data["detail"][0]["msg"] == (
-        "numRecommendations must be between " +
+        "Value error, numRecommendations must be between " +
         f"{NUM_RECOMMENDATIONS_MIN} and {NUM_RECOMMENDATIONS_MAX}"
     )
 
@@ -99,7 +99,7 @@ def test_recommend_papers_num_recommendations_greater_than_max(client: TestClien
 
     data = response.json()
     assert data["detail"][0]["msg"] == (
-        "numRecommendations must be between " +
+        "Value error, numRecommendations must be between " +
         f"{NUM_RECOMMENDATIONS_MIN} and {NUM_RECOMMENDATIONS_MAX}"
     )
 
