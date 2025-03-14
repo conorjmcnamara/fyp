@@ -1,11 +1,4 @@
 import { getEnvVar } from '../utils/getEnvVar';
 
-interface Config {
-  apiBaseUrl: string;
-}
-
-const config: Config = {
-  apiBaseUrl: getEnvVar('REACT_APP_BACKEND_URL')
-};
-
-export default config;
+export const MAX_TEXT_LENGTH: number = 1500;
+export const API_BASE_URL: string = getEnvVar('REACT_APP_BACKEND_URL');

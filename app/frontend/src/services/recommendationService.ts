@@ -1,4 +1,4 @@
-import config from '../config/config';
+import { API_BASE_URL } from '../config/config';
 
 export interface AuthorResponse {
   first_name: string;
@@ -24,7 +24,7 @@ export const fetchRecommendations = async (
   abstract: string,
   numRecommendations: number
 ): Promise<RecommendationResponse> => {
-  const response = await fetch(`${config.apiBaseUrl}/api/v1/recommendations`, {
+  const response = await fetch(`${API_BASE_URL}/api/v1/recommendations`, {
     method: 'POST',
     body: JSON.stringify({ title, abstract, numRecommendations }),
     headers: {
@@ -36,5 +36,25 @@ export const fetchRecommendations = async (
     throw new Error(`Request failed with status ${response.status}`);
   }
   
+  return response.json();
+};
+
+export const uploadPdf = async (
+  file: File,
+  numRecommendations: number
+): Promise<{ papers: PaperResponse[] }> => {
+  const formData = new FormData();
+  formData.append('file', file);
+  formData.append('numRecommendations', numRecommendations.toString()); 
+
+  const response = await fetch(`${API_BASE_URL}/api/v1/recommendations/upload`, {
+    method: 'POST',
+    body: formData,
+  });
+
+  if (!response.ok) {
+    throw new Error(`Request failed with status ${response.status}`);
+  }
+
   return response.json();
 };
