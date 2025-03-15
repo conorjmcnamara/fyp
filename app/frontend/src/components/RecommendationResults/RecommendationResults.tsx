@@ -24,8 +24,10 @@ const RecommendationResults: React.FC<RecommendationResultsProps> = (
 
   const goToNextPage = () => setCurrentPage((prev) => prev + 1);
   const goToPrevPage = () => setCurrentPage((prev) => prev - 1);
-  const toggleExpandedPaper = (id: string) => setExpandedPaperId(expandedPaperId === id ? null : id);
-
+  const toggleExpandedPaper = (id: string) => {
+    setExpandedPaperId(expandedPaperId === id ? null : id);
+  };
+  
   return (
     <div>
       <h2 className="text-2xl font-semibold mb-6">Recommended Citations</h2>

@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
-import { FiUpload } from 'react-icons/fi'; // Import the upload icon from react-icons
+import { FiUpload } from 'react-icons/fi';
+import { MAX_FILE_SIZE } from '../../config/config';
 import { PaperResponse, uploadPdf } from '../../services/recommendationService';
+import styles from './UploadPdf.module.css';
 
 interface UploadPdfProps {
   numRecommendations: number;
@@ -8,29 +10,21 @@ interface UploadPdfProps {
 }
 
 const UploadPdf: React.FC<UploadPdfProps> = ({ onResults, numRecommendations }) => {
-  const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
   const [fileName, setFileName] = useState<string | null>(null);
   const [uploadComplete, setUploadComplete] = useState<boolean>(false);
-
-  // Reset state when a new file is selected
-  const resetState = () => {
-    setError(null);
-    setFileName(null);
-    setUploadComplete(false);
-  };
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    resetState(); // Reset state when a new file is selected
+    setUploadComplete(false);
+    setFileName(file.name);
 
-    const maxSize = 5 * 1024 * 1024; // 50 MB
-    if (file.size > maxSize) {
-      setError('File size exceeds the 50 MB limit');
-      setLoading(false);
-      return; // Stop further processing if the file is too large
+    if (file.size > MAX_FILE_SIZE) {
+      setError(`File size exceeds the ${MAX_FILE_SIZE / 1024 / 1024} MB limit.`);
+      return;
     }
 
     if (file.type !== "application/pdf") {
@@ -38,7 +32,7 @@ const UploadPdf: React.FC<UploadPdfProps> = ({ onResults, numRecommendations }) 
       return;
     }
 
-    setFileName(file.name);
+    setError(null);
     setLoading(true);
 
     try {
@@ -63,29 +57,26 @@ const UploadPdf: React.FC<UploadPdfProps> = ({ onResults, numRecommendations }) 
         Drag and drop your PDF, or click to select a file.
       </p>
 
-      {/* New Dropzone UI */}
-      <div className="flex items-center justify-center w-full">
-        <label
-          htmlFor="dropzone-file"
-          className="flex flex-col items-center justify-center w-full h-60 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 dark:hover:bg-gray-800 dark:bg-gray-700 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600"
-        >
-          <div className="flex flex-col items-center justify-center pt-5 pb-6">
+      <div>
+        <label htmlFor="dropzone" className={styles.dropzone}>
+          <div className="flex flex-col items-center justify-center pt-5 pb-5">
             {loading ? (
-              <div className="animate-spin inline-block w-10 h-10 border-[3px] border-t-transparent border-gray-200 rounded-full mb-4" />
+              <div className="spinner size-12" />
             ) : (
               <>
-                <FiUpload className="w-8 h-8 mb-3 text-gray-500 dark:text-gray-400" />
-                <p className="mb-1 text-lg text-gray-500 dark:text-gray-400">
-                  <span className="font-semibold">Click to upload</span> or drag and drop
+                <FiUpload className="w-8 h-8 mb-3 text-gray-500" />
+                <p className="mb-1 text-lg text-gray-500">
+                  <span className="font-semibold">
+                    Click to upload</span> or drag and drop
                 </p>
-                <p className="text-sm text-gray-500 dark:text-gray-400">
-                  Pick a PDF up to 5 MB.
+                <p className="text-sm text-gray-500">
+                  Pick a PDF up to {MAX_FILE_SIZE / 1024 / 1024} MB.
                 </p>
               </>
             )}
           </div>
           <input
-            id="dropzone-file"
+            id="dropzone"
             type="file"
             accept="application/pdf"
             onChange={handleFileChange}
@@ -94,17 +85,16 @@ const UploadPdf: React.FC<UploadPdfProps> = ({ onResults, numRecommendations }) 
         </label>
       </div>
 
-      {/* Display File Name and Upload Status */}
-      {fileName && !loading && !error && (
-        <div className="mt-4 text-gray-700">
-          <p className="font-semibold truncate max-w-full">
-            {fileName}
-          </p>
-          {uploadComplete && <p className="text-sm text-gray-500">Upload complete</p>}
-        </div>
-      )}
+      <div className="mt-4">
+        {fileName && !loading && (
+          <div>
+            <p className="font-semibold text-gray-700">{fileName}</p>
+            {uploadComplete && <p className="text-sm text-gray-500">Upload complete.</p>}
+          </div>
+        )}
 
-      {error && <p className="text-red-600 text-sm font-medium mt-4">{error}</p>}
+        {error && <p className="text-red-600 text-sm font-medium">{error}</p>}
+      </div>
     </div>
   );
 };

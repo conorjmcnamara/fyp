@@ -58,7 +58,9 @@ const SearchForm: React.FC<SearchFormProps> = (
 
     if (isTooLong) return;
 
+    setError(null);
     setLoading(true);
+    
     try {
       const data = await fetchRecommendations(title, abstract, numRecommendations);
       onResults(data.papers);
@@ -111,16 +113,7 @@ const SearchForm: React.FC<SearchFormProps> = (
             items-center
           "
         >
-          {loading ? (
-            <div
-              className="
-                animate-spin inline-block size-6 border-[3px] border-t-transparent
-                border-gray-200 rounded-full
-              "
-            />
-          ) : (
-            'Search'
-          )}
+          {loading ? <div className="spinner size-6" /> : 'Search'}
         </button>
       </form>
     </div>
