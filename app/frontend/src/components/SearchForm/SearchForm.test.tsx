@@ -9,12 +9,15 @@ jest.mock('../../services/recommendationService', () => ({
 describe('SearchForm', () => {
   const numRecommendations = 5;
 
-  it('renders the form with title and abstract inputs and a search button', () => {
+  it('renders the component with input fields, a search button, and instructions', () => {
     render(<SearchForm onResults={jest.fn()} numRecommendations={numRecommendations} />);
 
     expect(screen.getByLabelText(/Title/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/Abstract/i)).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /Search/i })).toBeInTheDocument();
+    expect(
+      screen.getByText(/Enter the title and\/or abstract of your research/i)
+    ).toBeInTheDocument();
   });
 
   describe('field presence', () => {
@@ -50,7 +53,7 @@ describe('SearchForm', () => {
     });
   });
 
-  describe('maxLegth', () => {
+  describe('max text length', () => {
     const maxTextLength = 20;
     const maxTextLengthErrorMsg = `Title and abstract must not exceed ${maxTextLength} characters.`;
 
@@ -156,10 +159,15 @@ describe('SearchForm', () => {
 
     (fetchRecommendations as jest.Mock).mockResolvedValue({ papers: mockPapers });
     render(<SearchForm onResults={mockOnResults} numRecommendations={numRecommendations} />);
+    
+    const title = 'Example title';
+    const abstract = 'Example abstract';
 
-    fireEvent.change(screen.getByLabelText(/Title/i), { target: { value: 'Example title' } });
+    fireEvent.change(screen.getByLabelText(/Title/i), { target: { value: title } });
+    fireEvent.change(screen.getByLabelText(/Abstract/i), { target: { value: abstract } });
     fireEvent.click(screen.getByRole('button', { name: /Search/i }));
 
+    await waitFor(() => expect(fetchRecommendations).toHaveBeenCalledWith(title, abstract, numRecommendations));
     await waitFor(() => expect(mockOnResults).toHaveBeenCalledWith(mockPapers));
   });
 
@@ -176,7 +184,7 @@ describe('SearchForm', () => {
   });
 
   it('displays a generic error when fetchRecommendations fails with a non-Error type', async () => {
-    (fetchRecommendations as jest.Mock).mockRejectedValue('Network Error');
+    (fetchRecommendations as jest.Mock).mockRejectedValue('Unknown error');
     render(<SearchForm onResults={jest.fn()} numRecommendations={numRecommendations} />);
 
     fireEvent.change(screen.getByLabelText(/Title/i), { target: { value: 'Example title' } });

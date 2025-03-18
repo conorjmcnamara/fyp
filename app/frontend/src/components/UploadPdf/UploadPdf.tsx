@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { FiUpload } from 'react-icons/fi';
-import { MAX_FILE_SIZE } from '../../config/config';
+import { MAX_FILE_SIZE_BYTES } from '../../config/config';
 import { PaperResponse, uploadPdf } from '../../services/recommendationService';
 import styles from './UploadPdf.module.css';
 
@@ -10,8 +10,8 @@ interface UploadPdfProps {
 }
 
 const UploadPdf: React.FC<UploadPdfProps> = ({ onResults, numRecommendations }) => {
-  const [fileName, setFileName] = useState<string | null>(null);
   const [uploadComplete, setUploadComplete] = useState<boolean>(false);
+  const [fileName, setFileName] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -22,13 +22,13 @@ const UploadPdf: React.FC<UploadPdfProps> = ({ onResults, numRecommendations }) 
     setUploadComplete(false);
     setFileName(file.name);
 
-    if (file.size > MAX_FILE_SIZE) {
-      setError(`File size exceeds the ${MAX_FILE_SIZE / 1024 / 1024} MB limit.`);
-      return;
-    }
-
     if (file.type !== "application/pdf") {
       setError('Invalid file type. Please upload a PDF file.');
+      return;
+    }
+    
+    if (file.size > MAX_FILE_SIZE_BYTES) {
+      setError(`File size exceeds the ${MAX_FILE_SIZE_BYTES / 1024 / 1024} MB limit.`);
       return;
     }
 
@@ -66,11 +66,10 @@ const UploadPdf: React.FC<UploadPdfProps> = ({ onResults, numRecommendations }) 
               <>
                 <FiUpload className="w-8 h-8 mb-3 text-gray-500" />
                 <p className="mb-1 text-lg text-gray-500">
-                  <span className="font-semibold">
-                    Click to upload</span> or drag and drop
+                  <span className="font-semibold">Click to upload</span> or drag and drop
                 </p>
                 <p className="text-sm text-gray-500">
-                  Pick a PDF up to {MAX_FILE_SIZE / 1024 / 1024} MB.
+                  Pick a PDF up to {MAX_FILE_SIZE_BYTES / 1024 / 1024} MB.
                 </p>
               </>
             )}
