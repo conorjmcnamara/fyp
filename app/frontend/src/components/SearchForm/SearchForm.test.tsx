@@ -44,7 +44,9 @@ describe('SearchForm', () => {
     it('does not display an error when abstract is provided but title is empty', async () => {
       render(<SearchForm onResults={jest.fn()} numRecommendations={numRecommendations} />);
   
-      fireEvent.change(screen.getByLabelText(/Abstract/i), { target: { value: 'Example abstract' } });
+      fireEvent.change(
+        screen.getByLabelText(/Abstract/i), { target: { value: 'Example abstract' } }
+      );
       fireEvent.click(screen.getByRole('button', { name: /Search/i }));
   
       await waitFor(() => expect(
@@ -55,7 +57,8 @@ describe('SearchForm', () => {
 
   describe('max text length', () => {
     const maxTextLength = 20;
-    const maxTextLengthErrorMsg = `Title and abstract must not exceed ${maxTextLength} characters.`;
+    const maxTextLengthErrorMsg = `Title and abstract must not exceed ${maxTextLength} 
+      characters.`;
 
     it('does not display an error when title length has max length', () => {
       render(
@@ -66,7 +69,9 @@ describe('SearchForm', () => {
         />
       );
 
-      fireEvent.change(screen.getByLabelText(/Title/i), { target: { value: 'A'.repeat(maxTextLength) } });
+      fireEvent.change(
+        screen.getByLabelText(/Title/i), { target: { value: 'A'.repeat(maxTextLength) } }
+      );
       expect(screen.queryByText(new RegExp(maxTextLengthErrorMsg, 'i'))).not.toBeInTheDocument();
     });
 
@@ -79,7 +84,9 @@ describe('SearchForm', () => {
         />
       );
 
-      fireEvent.change(screen.getByLabelText(/Title/i), { target: { value: 'A'.repeat(maxTextLength + 1) } });
+      fireEvent.change(
+        screen.getByLabelText(/Title/i), { target: { value: 'A'.repeat(maxTextLength + 1) } }
+      );
       expect(screen.getByText(new RegExp(maxTextLengthErrorMsg, 'i'))).toBeInTheDocument();
     });
 
@@ -92,7 +99,9 @@ describe('SearchForm', () => {
         />
       );
 
-      fireEvent.change(screen.getByLabelText(/Abstract/i), { target: { value: 'A'.repeat(maxTextLength) } });
+      fireEvent.change(
+        screen.getByLabelText(/Abstract/i), { target: { value: 'A'.repeat(maxTextLength) } }
+      );
       expect(screen.queryByText(new RegExp(maxTextLengthErrorMsg, 'i'))).not.toBeInTheDocument();
     });
 
@@ -105,7 +114,9 @@ describe('SearchForm', () => {
         />
       );
 
-      fireEvent.change(screen.getByLabelText(/Abstract/i), { target: { value: 'A'.repeat(maxTextLength + 1) } });
+      fireEvent.change(
+        screen.getByLabelText(/Abstract/i), { target: { value: 'A'.repeat(maxTextLength + 1) } }
+      );
       expect(screen.getByText(new RegExp(maxTextLengthErrorMsg, 'i'))).toBeInTheDocument();
     });
 
@@ -119,7 +130,9 @@ describe('SearchForm', () => {
       );
 
       fireEvent.change(screen.getByLabelText(/Title/i), { target: { value: 'A'.repeat(1) } });
-      fireEvent.change(screen.getByLabelText(/Abstract/i), { target: { value: 'A'.repeat(maxTextLength - 1) } });
+      fireEvent.change(
+        screen.getByLabelText(/Abstract/i), { target: { value: 'A'.repeat(maxTextLength - 1) } }
+      );
       expect(screen.queryByText(new RegExp(maxTextLengthErrorMsg, 'i'))).not.toBeInTheDocument();
     });
 
@@ -133,7 +146,9 @@ describe('SearchForm', () => {
       );
 
       fireEvent.change(screen.getByLabelText(/Title/i), { target: { value: 'A'.repeat(1) } });
-      fireEvent.change(screen.getByLabelText(/Abstract/i), { target: { value: 'A'.repeat(maxTextLength) } });
+      fireEvent.change(
+        screen.getByLabelText(/Abstract/i), { target: { value: 'A'.repeat(maxTextLength) } }
+      );
       expect(screen.getByText(new RegExp(maxTextLengthErrorMsg, 'i'))).toBeInTheDocument();
     });
 
@@ -147,7 +162,9 @@ describe('SearchForm', () => {
         />
       );
 
-      fireEvent.change(screen.getByLabelText(/Title/i), { target: { value: 'A'.repeat(maxTextLength + 1) } });
+      fireEvent.change(
+        screen.getByLabelText(/Title/i), { target: { value: 'A'.repeat(maxTextLength + 1) } }
+      );
       fireEvent.click(screen.getByRole('button', { name: /Search/i }));
       expect(fetchRecommendations).not.toHaveBeenCalled();
     });
@@ -167,7 +184,13 @@ describe('SearchForm', () => {
     fireEvent.change(screen.getByLabelText(/Abstract/i), { target: { value: abstract } });
     fireEvent.click(screen.getByRole('button', { name: /Search/i }));
 
-    await waitFor(() => expect(fetchRecommendations).toHaveBeenCalledWith(title, abstract, numRecommendations));
+    await waitFor(() => 
+      expect(fetchRecommendations).toHaveBeenCalledWith(
+        title,
+        abstract,
+        numRecommendations
+      )
+    );    
     await waitFor(() => expect(mockOnResults).toHaveBeenCalledWith(mockPapers));
   });
 
