@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Header from '../../components/Header/Header';
-import SearchForm from '../../components/SearchForm/SearchForm';
+import TabToggle from '../../components/TabToggle/TabToggle';
 import Results from '../../components/RecommendationResults/RecommendationResults';
 import { PaperResponse } from '../../services/recommendationService';
 
@@ -12,17 +12,17 @@ const Home: React.FC = () => {
   };
 
   return (
-    <div className="max-w-full sm:max-w-2xl mx-auto p-6">
-      <div className="bg-white p-5 rounded-lg shadow-lg">
+    <div className="max-w-full sm:max-w-3xl mx-auto p-6">
+      <div className="card">
         <Header />
       </div>
 
-      <div className="bg-white p-6 mt-10 rounded-lg shadow-lg">
-        <SearchForm onResults={handleResults} />
+      <div className="card mt-10">
+        <TabToggle onResults={handleResults} />
       </div>
 
       {papers.length > 0 && (
-        <div className="bg-white p-6 mt-10 rounded-lg shadow-lg">
+        <div className="card mt-10">
           <Results papers={papers} />
         </div>
       )}

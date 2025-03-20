@@ -5,3 +5,12 @@
 body {
     @apply bg-gray-100;
 }
+
+.card {
+    @apply p-6 bg-white shadow-md rounded-lg;
+}
+
+.spinner {
+    @apply animate-spin inline-block border-[3px] border-t-transparent border-gray-200 
+        rounded-full;
+}
