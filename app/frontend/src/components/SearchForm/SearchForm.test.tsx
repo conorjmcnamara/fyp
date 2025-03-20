@@ -57,8 +57,8 @@ describe('SearchForm', () => {
 
   describe('max text length', () => {
     const maxTextLength = 20;
-    const maxTextLengthErrorMsg = `Title and abstract must not exceed ${maxTextLength} 
-      characters.`;
+    const maxTextLengthErrorMsg = `Title and abstract must not exceed ${
+      maxTextLength} characters.`;
 
     it('does not display an error when title length has max length', () => {
       render(
