@@ -57,35 +57,35 @@ def run_evaluate(
 
     base_model = model.split('_')[0]
     evaluate(
-        os.path.join(
+        results_path=os.path.join(
             curr_dir,
             f"data/results/{base_model}/{dataset}{'_' + fusion_model if fusion_model else ''}" +
             f"_{model}{'_' + secondary_model if secondary_model else ''}" +
             f"{'_' + rerank_model if rerank_model else ''}_results.csv"
         ),
-        os.path.join(
+        train_index_path=os.path.join(
             curr_dir,
             f"data/embeddings/{dataset}_train{'_' + fusion_model if fusion_model else ''}" +
             f"_{base_model}{'_' + secondary_model if secondary_model else ''}.faiss"
         ),
-        os.path.join(
+        test_index_path=os.path.join(
             curr_dir,
             f"data/embeddings/{dataset}_test{'_' + fusion_model if fusion_model else ''}_{model}" +
             f"{'_' + secondary_model if secondary_model else ''}.faiss"
         ),
-        os.path.join(
+        train_ids_path=os.path.join(
             curr_dir,
             f"data/embeddings/{dataset}_train{'_' + fusion_model if fusion_model else ''}" +
             f"_{base_model}{'_' + secondary_model if secondary_model else ''}_ids.pkl"
         ),
-        os.path.join(
+        test_ids_path=os.path.join(
             curr_dir,
             f"data/embeddings/{dataset}_test{'_' + fusion_model if fusion_model else ''}_{model}" +
             f"{'_' + secondary_model if secondary_model else ''}_ids.pkl"
         ),
-        os.path.join(curr_dir, f"data/parsed/{dataset}_test.json"),
-        k_vals,
-        rerank_scores_path
+        test_papers_path=os.path.join(curr_dir, f"data/parsed/{dataset}_test.json"),
+        k_vals=k_vals,
+        rerank_scores_path=rerank_scores_path
     )
 
 
