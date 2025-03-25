@@ -28,10 +28,10 @@ def run_train_tfidf(curr_dir: str, dataset: str) -> None:
 def run_generate_and_save_text_vectors(curr_dir: str, dataset: str, model: str) -> None:
     def with_split(split: str) -> None:
         generate_and_save_text_vectors(
-            os.path.join(curr_dir, f"data/embeddings/{dataset}_{split}_{model}.faiss"),
-            os.path.join(curr_dir, f"data/embeddings/{dataset}_{split}_{model}_ids.pkl"),
-            os.path.join(curr_dir, f"data/parsed/{dataset}_{split}.json"),
-            os.path.join(curr_dir, f"data/embeddings/{dataset}_train_{model}.pkl")
+            index_path=os.path.join(curr_dir, f"data/embeddings/{dataset}_{split}_{model}.faiss"),
+            ids_path=os.path.join(curr_dir, f"data/embeddings/{dataset}_{split}_{model}_ids.pkl"),
+            papers_path=os.path.join(curr_dir, f"data/parsed/{dataset}_{split}.json"),
+            model_path=os.path.join(curr_dir, f"data/embeddings/{dataset}_train_{model}.pkl")
         )
 
     with_split("test")
@@ -57,35 +57,35 @@ def run_evaluate(
 
     base_model = model.split('_')[0]
     evaluate(
-        os.path.join(
+        results_path=os.path.join(
             curr_dir,
             f"data/results/{base_model}/{dataset}{'_' + fusion_model if fusion_model else ''}" +
             f"_{model}{'_' + secondary_model if secondary_model else ''}" +
             f"{'_' + rerank_model if rerank_model else ''}_results.csv"
         ),
-        os.path.join(
+        train_index_path=os.path.join(
             curr_dir,
             f"data/embeddings/{dataset}_train{'_' + fusion_model if fusion_model else ''}" +
             f"_{base_model}{'_' + secondary_model if secondary_model else ''}.faiss"
         ),
-        os.path.join(
+        test_index_path=os.path.join(
             curr_dir,
             f"data/embeddings/{dataset}_test{'_' + fusion_model if fusion_model else ''}_{model}" +
             f"{'_' + secondary_model if secondary_model else ''}.faiss"
         ),
-        os.path.join(
+        train_ids_path=os.path.join(
             curr_dir,
             f"data/embeddings/{dataset}_train{'_' + fusion_model if fusion_model else ''}" +
             f"_{base_model}{'_' + secondary_model if secondary_model else ''}_ids.pkl"
         ),
-        os.path.join(
+        test_ids_path=os.path.join(
             curr_dir,
             f"data/embeddings/{dataset}_test{'_' + fusion_model if fusion_model else ''}_{model}" +
             f"{'_' + secondary_model if secondary_model else ''}_ids.pkl"
         ),
-        os.path.join(curr_dir, f"data/parsed/{dataset}_test.json"),
-        k_vals,
-        rerank_scores_path
+        test_papers_path=os.path.join(curr_dir, f"data/parsed/{dataset}_test.json"),
+        k_vals=k_vals,
+        rerank_scores_path=rerank_scores_path
     )
 
 
@@ -99,11 +99,17 @@ def run_generate_and_save_transformer_embeddings(
 
     def with_split(split: str) -> None:
         generate_and_save_transformer_embeddings(
-            os.path.join(curr_dir, f"data/embeddings/{dataset}_{split}_{model_path}.faiss"),
-            os.path.join(curr_dir, f"data/embeddings/{dataset}_{split}_{model_path}_ids.pkl"),
-            os.path.join(curr_dir, f"data/parsed/{dataset}_{split}.json"),
-            model,
-            adapter_config
+            index_path=os.path.join(
+                curr_dir,
+                f"data/embeddings/{dataset}_{split}_{model_path}.faiss"
+            ),
+            ids_path=os.path.join(
+                curr_dir,
+                f"data/embeddings/{dataset}_{split}_{model_path}_ids.pkl"
+            ),
+            papers_path=os.path.join(curr_dir, f"data/parsed/{dataset}_{split}.json"),
+            model_name=model,
+            adapter_config=adapter_config
         )
 
     with_split("test")
@@ -112,18 +118,18 @@ def run_generate_and_save_transformer_embeddings(
 
 def run_train_doc2vec(curr_dir: str, dataset: str) -> None:
     train_doc2vec(
-        os.path.join(curr_dir, f"data/embeddings/{dataset}_train_doc2vec.model"),
-        os.path.join(curr_dir, f"data/parsed/{dataset}_train.json")
+        doc2vec_path=os.path.join(curr_dir, f"data/embeddings/{dataset}_train_doc2vec.model"),
+        papers_path=os.path.join(curr_dir, f"data/parsed/{dataset}_train.json")
     )
 
 
 def run_generate_and_save_doc2vec_embeddings(curr_dir: str, dataset: str) -> None:
     def with_split(split: str) -> None:
         generate_and_save_doc2vec_embeddings(
-            os.path.join(curr_dir, f"data/embeddings/{dataset}_{split}_doc2vec.faiss"),
-            os.path.join(curr_dir, f"data/embeddings/{dataset}_{split}_doc2vec_ids.pkl"),
-            os.path.join(curr_dir, f"data/parsed/{dataset}_{split}.json"),
-            os.path.join(curr_dir, f"data/embeddings/{dataset}_train_doc2vec.model")
+            index_path=os.path.join(curr_dir, f"data/embeddings/{dataset}_{split}_doc2vec.faiss"),
+            ids_path=os.path.join(curr_dir, f"data/embeddings/{dataset}_{split}_doc2vec_ids.pkl"),
+            papers_path=os.path.join(curr_dir, f"data/parsed/{dataset}_{split}.json"),
+            model_path=os.path.join(curr_dir, f"data/embeddings/{dataset}_train_doc2vec.model")
         )
 
     with_split("test")
@@ -132,8 +138,8 @@ def run_generate_and_save_doc2vec_embeddings(curr_dir: str, dataset: str) -> Non
 
 def run_generate_and_save_graph(curr_dir: str, dataset: str) -> None:
     generate_and_save_graph(
-        os.path.join(curr_dir, f"data/embeddings/{dataset}_train_graph.pkl"),
-        os.path.join(curr_dir, f"data/parsed/{dataset}_train.json")
+        graph_path=os.path.join(curr_dir, f"data/embeddings/{dataset}_train_graph.pkl"),
+        train_papers_path=os.path.join(curr_dir, f"data/parsed/{dataset}_train.json")
     )
 
 
@@ -146,11 +152,11 @@ def run_generate_and_save_train_node_embeddings(
     model = f"node2vec_{p}_{q}"
 
     generate_and_save_train_node_embeddings(
-        os.path.join(curr_dir, f"data/embeddings/{dataset}_train_{model}.faiss"),
-        os.path.join(curr_dir, f"data/embeddings/{dataset}_train_{model}_ids.pkl"),
-        os.path.join(curr_dir, f"data/embeddings/{dataset}_train_graph.pkl"),
-        p,
-        q
+        index_path=os.path.join(curr_dir, f"data/embeddings/{dataset}_train_{model}.faiss"),
+        ids_path=os.path.join(curr_dir, f"data/embeddings/{dataset}_train_{model}_ids.pkl"),
+        graph_path=os.path.join(curr_dir, f"data/embeddings/{dataset}_train_graph.pkl"),
+        p=p,
+        q=q
     )
 
 
@@ -170,15 +176,36 @@ def run_generate_and_save_test_node_embeddings(
     ]
 
     generate_and_save_test_node_embeddings(
-        test_node_index_paths,
-        os.path.join(curr_dir, f"data/embeddings/{dataset}_test_{node_model}_ids.pkl"),
-        os.path.join(curr_dir, f"data/embeddings/{dataset}_train_{node_model}.faiss"),
-        os.path.join(curr_dir, f"data/embeddings/{dataset}_train_{node_model}_ids.pkl"),
-        os.path.join(curr_dir, f"data/embeddings/{dataset}_train_{text_model}.faiss"),
-        os.path.join(curr_dir, f"data/embeddings/{dataset}_test_{text_model}.faiss"),
-        os.path.join(curr_dir, f"data/embeddings/{dataset}_train_{text_model}_ids.pkl"),
-        os.path.join(curr_dir, f"data/embeddings/{dataset}_test_{text_model}_ids.pkl"),
-        n_vals
+        test_node_index_paths=test_node_index_paths,
+        test_node_ids_path=os.path.join(
+            curr_dir,
+            f"data/embeddings/{dataset}_test_{node_model}_ids.pkl"
+        ),
+        train_node_index_path=os.path.join(
+            curr_dir,
+            f"data/embeddings/{dataset}_train_{node_model}.faiss"
+        ),
+        train_node_ids_path=os.path.join(
+            curr_dir,
+            f"data/embeddings/{dataset}_train_{node_model}_ids.pkl"
+        ),
+        train_text_index_path=os.path.join(
+            curr_dir,
+            f"data/embeddings/{dataset}_train_{text_model}.faiss"
+        ),
+        test_text_index_path=os.path.join(
+            curr_dir,
+            f"data/embeddings/{dataset}_test_{text_model}.faiss"
+        ),
+        train_text_ids_path=os.path.join(
+            curr_dir,
+            f"data/embeddings/{dataset}_train_{text_model}_ids.pkl"
+        ),
+        test_text_ids_path=os.path.join(
+            curr_dir,
+            f"data/embeddings/{dataset}_test_{text_model}_ids.pkl"
+        ),
+        n_vals=n_vals
     )
 
 
@@ -191,15 +218,27 @@ def run_train_fusion_model(
     node_model: str
 ) -> None:
     train_fusion_model(
-        os.path.join(
+        fusion_modeel_path=os.path.join(
             curr_dir,
             f"data/embeddings/{dataset}_{fusion_model}_{text_model}_{node_model}.pkl"
         ),
-        fusion_func,
-        os.path.join(curr_dir, f"data/embeddings/{dataset}_train_{text_model}.faiss"),
-        os.path.join(curr_dir, f"data/embeddings/{dataset}_train_{text_model}_ids.pkl"),
-        os.path.join(curr_dir, f"data/embeddings/{dataset}_train_{node_model}.faiss"),
-        os.path.join(curr_dir, f"data/embeddings/{dataset}_train_{node_model}_ids.pkl")
+        fusion_func=fusion_func,
+        text_index_path=os.path.join(
+            curr_dir,
+            f"data/embeddings/{dataset}_train_{text_model}.faiss"
+        ),
+        text_ids_path=os.path.join(
+            curr_dir,
+            f"data/embeddings/{dataset}_train_{text_model}_ids.pkl"
+        ),
+        node_index_path=os.path.join(
+            curr_dir,
+            f"data/embeddings/{dataset}_train_{node_model}.faiss"
+        ),
+        node_ids_path=os.path.join(
+            curr_dir,
+            f"data/embeddings/{dataset}_train_{node_model}_ids.pkl"
+        )
     )
 
 
@@ -216,38 +255,47 @@ def run_project_embeddings(
         base_text_model = text_model.split('_')[0]
 
         project_embeddings(
-            os.path.join(
+            projected_text_index_path=os.path.join(
                 curr_dir,
                 f"data/embeddings/{dataset}_{split}_{fusion_model}_text_projected_{text_model}" +
                 f"_{node_model}.faiss"
             ),
-            os.path.join(
+            projected_text_ids_path=os.path.join(
                 curr_dir,
                 f"data/embeddings/{dataset}_{split}_{fusion_model}_text_projected_{text_model}" +
                 f"_{node_model}_ids.pkl"
             ),
-            os.path.join(
+            projected_node_index_path=os.path.join(
                 curr_dir,
                 f"data/embeddings/{dataset}_{split}_{fusion_model}_node_projected_{text_model}" +
                 f"_{node_model}.faiss"
             ),
-            os.path.join(
+            projected_node_ids_path=os.path.join(
                 curr_dir,
                 f"data/embeddings/{dataset}_{split}_{fusion_model}_node_projected_{text_model}" +
                 f"_{node_model}_ids.pkl"
             ),
-            os.path.join(
+            fusion_model_path=os.path.join(
                 curr_dir,
                 f"data/embeddings/{dataset}_{fusion_model}_{base_text_model}_{node_model}.pkl"
             ),
-            os.path.join(curr_dir, f"data/embeddings/{dataset}_{split}_{base_text_model}.faiss"),
-            os.path.join(curr_dir, f"data/embeddings/{dataset}_{split}_{base_text_model}_ids.pkl"),
-            os.path.join(
+            text_index_path=os.path.join(
+                curr_dir,
+                f"data/embeddings/{dataset}_{split}_{base_text_model}.faiss"
+            ),
+            text_ids_path=os.path.join(
+                curr_dir,
+                f"data/embeddings/{dataset}_{split}_{base_text_model}_ids.pkl"
+            ),
+            node_index_path=os.path.join(
                 curr_dir,
                 f"data/embeddings/{dataset}_{split}_{node_model}" +
                 f"{'_' + text_model if not train else ''}.faiss"
             ),
-            os.path.join(curr_dir, f"data/embeddings/{dataset}_{split}_{node_model}_ids.pkl")
+            node_ids_path=os.path.join(
+                curr_dir,
+                f"data/embeddings/{dataset}_{split}_{node_model}_ids.pkl"
+            )
         )
 
     with_split(True)
@@ -272,24 +320,33 @@ def run_fuse_embeddings(
         base_text_model = text_model.split('_')[0]
 
         fuse_embeddings(
-            os.path.join(
+            fused_index_path=os.path.join(
                 curr_dir,
                 f"data/embeddings/{dataset}_{split}_{fusion_model}_{text_model}_{node_model}.faiss"
             ),
-            os.path.join(
+            fused_ids_path=os.path.join(
                 curr_dir,
                 f"data/embeddings/{dataset}_{split}_{fusion_model}_{text_model}_{node_model}_ids" +
                 ".pkl"
             ),
-            fusion_func,
-            os.path.join(curr_dir, f"data/embeddings/{dataset}_{split}_{base_text_model}.faiss"),
-            os.path.join(curr_dir, f"data/embeddings/{dataset}_{split}_{base_text_model}_ids.pkl"),
-            os.path.join(
+            fusion_func=fusion_func,
+            text_index_path=os.path.join(
+                curr_dir,
+                f"data/embeddings/{dataset}_{split}_{base_text_model}.faiss"
+            ),
+            text_ids_path=os.path.join(
+                curr_dir,
+                f"data/embeddings/{dataset}_{split}_{base_text_model}_ids.pkl"
+            ),
+            node_index_path=os.path.join(
                 curr_dir,
                 f"data/embeddings/{dataset}_{split}_{node_model}" +
                 f"{'_' + text_model if not train else ''}.faiss"
             ),
-            os.path.join(curr_dir, f"data/embeddings/{dataset}_{split}_{node_model}_ids.pkl")
+            node_ids_path=os.path.join(
+                curr_dir,
+                f"data/embeddings/{dataset}_{split}_{node_model}_ids.pkl"
+            )
         )
 
     with_split(True)
@@ -315,32 +372,32 @@ def run_fuse_embeddings_with_projection(
         split = "train" if train else "test"
 
         fuse_embeddings(
-            os.path.join(
+            fused_index_path=os.path.join(
                 curr_dir,
                 f"data/embeddings/{dataset}_{split}_{fusion_model}_{text_model}_{node_model}.faiss"
             ),
-            os.path.join(
+            fused_ids_path=os.path.join(
                 curr_dir,
                 f"data/embeddings/{dataset}_{split}_{fusion_model}_{text_model}_{node_model}_ids" +
                 ".pkl"
             ),
-            fusion_func,
-            os.path.join(
+            fusion_func=fusion_func,
+            text_index_path=os.path.join(
                 curr_dir,
                 f"data/embeddings/{dataset}_{split}_{projection}_text_projected_{text_model}" +
                 f"_{node_model}.faiss"
             ),
-            os.path.join(
+            text_ids_path=os.path.join(
                 curr_dir,
                 f"data/embeddings/{dataset}_{split}_{projection}_text_projected_{text_model}" +
                 f"_{node_model}_ids.pkl"
             ),
-            os.path.join(
+            node_index_path=os.path.join(
                 curr_dir,
                 f"data/embeddings/{dataset}_{split}_{projection}_node_projected_{text_model}" +
                 f"_{node_model}.faiss"
             ),
-            os.path.join(
+            node_ids_path=os.path.join(
                 curr_dir,
                 f"data/embeddings/{dataset}_{split}_{projection}_node_projected_{text_model}" +
                 f"_{node_model}_ids.pkl"
@@ -362,7 +419,10 @@ def run_compute_and_save_rerank_scores(
     rerank_func: Callable[[nx.DiGraph], Dict[str, float]]
 ) -> None:
     compute_and_save_rerank_scores(
-        os.path.join(curr_dir, f"data/embeddings/{dataset}_train_graph_{model}.pkl"),
-        os.path.join(curr_dir, f"data/embeddings/{dataset}_train_graph.pkl"),
-        rerank_func
+        rerank_scores_path=os.path.join(
+            curr_dir,
+            f"data/embeddings/{dataset}_train_graph_{model}.pkl"
+        ),
+        graph_path=os.path.join(curr_dir, f"data/embeddings/{dataset}_train_graph.pkl"),
+        rerank_func=rerank_func
     )

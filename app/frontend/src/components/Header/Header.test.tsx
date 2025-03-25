@@ -5,10 +5,7 @@ describe('Header component', () => {
   it('renders the header with a title and description', () => {
     render(<Header />);
 
-    const titleElement = screen.getByText(/Citation Recommender/i);
-    expect(titleElement).toBeInTheDocument();
-
-    const descriptionElement = screen.getByText(/Find relevant citations for your research/i);
-    expect(descriptionElement).toBeInTheDocument();
+    expect(screen.getByText(/Citation Recommender/i)).toBeInTheDocument();
+    expect(screen.getByText(/Find relevant citations for your research/i)).toBeInTheDocument();
   });
 });
