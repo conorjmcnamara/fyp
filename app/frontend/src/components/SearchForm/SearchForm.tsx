@@ -104,7 +104,7 @@ const SearchForm: React.FC<SearchFormProps> = (
           />
         </div>
 
-        {error && <p className="text-red-600 text-sm font-medium">{error}</p>}
+        {error && <p className="text-red-600 font-medium">{error}</p>}
 
         <button 
           type="submit" 

@@ -1,14 +1,11 @@
-from fastapi import APIRouter, Request, Depends, HTTPException, File, Form, UploadFile
+from fastapi import APIRouter, Request, Depends, HTTPException, UploadFile, File, Form
 from sqlalchemy.orm import Session
 from io import BytesIO
-from typing import List
 from src.services.recommendation import RecommendationService
 from src.services.pdf_processor import PdfProcessorService
 from src.schemas.recommendation import RecommendationRequest, RecommendationResponse, PaperResponse
 from src.core.database import get_db
-
-
-MAX_FILE_SIZE = 10 * 1024 * 1024 # 10 mb
+from src.config.settings import MAX_FILE_SIZE_BYTES
 
 router = APIRouter(prefix="/recommendations", tags=["Recommendations"])
 
@@ -44,27 +41,21 @@ async def recommend_from_text(
 @router.post("/upload", response_model=RecommendationResponse)
 async def recommend_from_pdf(
     file: UploadFile = File(...),
-    numRecommendations: int = Form(...),    # snake case api?
+    numRecommendations: int = Form(...),
     db: Session = Depends(get_db),
     pdf_processor_service: PdfProcessorService = Depends(get_pdf_processor_service),
     recommendation_service: RecommendationService = Depends(get_recommendation_service)
 ) -> RecommendationResponse:
     if file.content_type != "application/pdf":
-        raise HTTPException(status_code=400, detail="Only PDF files are allowed")
+        raise HTTPException(status_code=422, detail="Invalid file type. Please upload a PDF file.")
     
-    # file size
-    if file.size > MAX_FILE_SIZE:
-        raise HTTPException(status_code=400, detail=f"File size exceeds the {MAX_FILE_SIZE // (1024 * 1024)}MB limit.")
-
+    if file.size > MAX_FILE_SIZE_BYTES:
+        raise HTTPException(status_code=422, detail=f"File size must not exceed the {MAX_FILE_SIZE_BYTES / 1024 / 1024} MB limit.")
 
     file_content = BytesIO(await file.read())
-
     title, abstract = pdf_processor_service.extract_title_and_abstract(file_content)
-
     if not title and not abstract:
-        raise HTTPException(status_code=400, detail="Both title and abstract are missing in the PDF")
-
-
+        raise HTTPException(status_code=422, detail="Failed to parse a title and abstract.")
 
     try:
         RecommendationRequest(
@@ -74,7 +65,6 @@ async def recommend_from_pdf(
         )
     except ValueError as e:
         raise HTTPException(status_code=422, detail=f"Validation Error: {e}")
-
 
     try:
         recommended_papers = recommendation_service.recommend(

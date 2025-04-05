@@ -1,6 +1,6 @@
 from pydantic import BaseModel, model_validator
 from typing import List
-from src.config.settings import NUM_RECOMMENDATIONS_MIN, NUM_RECOMMENDATIONS_MAX
+from src.config.settings import MAX_TEXT_LENGTH, NUM_RECOMMENDATIONS_MIN, NUM_RECOMMENDATIONS_MAX
 
 
 class RecommendationRequest(BaseModel):
@@ -14,21 +14,23 @@ class RecommendationRequest(BaseModel):
         abstract = values.get("abstract")
         numRecommendations = values.get("numRecommendations")
 
-        # Validate the combined length of title and abstract
-        if len(title) + len(abstract) > 1500:
-            remaining_len = 1500 - len(title)
+        if len(title) + len(abstract) > MAX_TEXT_LENGTH:
+            # Prune the title and abstract
+            remaining_len = MAX_TEXT_LENGTH - len(title)
             if remaining_len > 0:
                 abstract = abstract[:remaining_len]
             else:
-                title = title[:1500]
+                title = title[:MAX_TEXT_LENGTH]
                 abstract = ""
             
             values["title"] = title
             values["abstract"] = abstract
 
-        # Validate the numRecommendations range
         if not (NUM_RECOMMENDATIONS_MIN <= numRecommendations <= NUM_RECOMMENDATIONS_MAX):
-            raise ValueError(f"numRecommendations must be between {NUM_RECOMMENDATIONS_MIN} and {NUM_RECOMMENDATIONS_MAX}.")
+            raise ValueError(
+                f"numRecommendations must be between {NUM_RECOMMENDATIONS_MIN} and " +
+                f"{NUM_RECOMMENDATIONS_MAX}."
+            )
 
         return values
 

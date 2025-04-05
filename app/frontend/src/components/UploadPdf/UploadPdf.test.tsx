@@ -16,7 +16,7 @@ describe('UploadPdf', () => {
 
     expect(screen.getByLabelText(/Click to upload/i)).toBeInTheDocument();
     expect(
-      screen.getByText(/Drag and drop your PDF, or click to select a file/i)
+      screen.getByText(/Drag and drop your research manuscript as a PDF, or click to upload./i)
     ).toBeInTheDocument();
   });
 

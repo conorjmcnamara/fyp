@@ -1,6 +1,8 @@
 # Schema validation constants
 NUM_RECOMMENDATIONS_MIN = 1
 NUM_RECOMMENDATIONS_MAX = 50
+MAX_TEXT_LENGTH = 1500
+MAX_FILE_SIZE_BYTES = 5 * 1024 * 1024
 
 # Embedding service constants
 TEXT_EMBEDDING_MODEL_DIR = "data/models/specter2/"

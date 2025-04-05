@@ -28,7 +28,7 @@ const UploadPdf: React.FC<UploadPdfProps> = ({ onResults, numRecommendations }) 
     }
     
     if (file.size > MAX_FILE_SIZE_BYTES) {
-      setError(`File size exceeds the ${MAX_FILE_SIZE_BYTES / 1024 / 1024} MB limit.`);
+      setError(`File size must not exceed the ${MAX_FILE_SIZE_BYTES / 1024 / 1024} MB limit.`);
       return;
     }
 
@@ -54,7 +54,7 @@ const UploadPdf: React.FC<UploadPdfProps> = ({ onResults, numRecommendations }) 
     <div>
       <h2 className="text-xl font-semibold mb-1">Upload your PDF</h2>
       <p className="text-gray-500 mb-4">
-        Drag and drop your PDF, or click to select a file.
+        Drag and drop your research manuscript as a PDF, or click to upload.
       </p>
 
       <div>
@@ -92,7 +92,7 @@ const UploadPdf: React.FC<UploadPdfProps> = ({ onResults, numRecommendations }) 
           </div>
         )}
 
-        {error && <p className="text-red-600 text-sm font-medium">{error}</p>}
+        {error && <p className="text-red-600 font-medium">{error}</p>}
       </div>
     </div>
   );
