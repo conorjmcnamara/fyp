@@ -43,7 +43,7 @@ describe('UploadPdf', () => {
 
     expect(
       await screen.findByText(
-        new RegExp(`File size exceeds the ${MAX_FILE_SIZE_BYTES / 1024 / 1024} MB limit`, 'i')
+        new RegExp(`File size must not exceed the ${MAX_FILE_SIZE_BYTES / 1024 / 1024} MB limit`, 'i')
       )
     ).toBeInTheDocument();
   });

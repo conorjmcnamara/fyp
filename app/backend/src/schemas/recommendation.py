@@ -22,7 +22,7 @@ class RecommendationRequest(BaseModel):
             else:
                 title = title[:MAX_TEXT_LENGTH]
                 abstract = ""
-            
+
             values["title"] = title
             values["abstract"] = abstract
 

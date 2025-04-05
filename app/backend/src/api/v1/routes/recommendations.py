@@ -48,9 +48,12 @@ async def recommend_from_pdf(
 ) -> RecommendationResponse:
     if file.content_type != "application/pdf":
         raise HTTPException(status_code=422, detail="Invalid file type. Please upload a PDF file.")
-    
+
     if file.size > MAX_FILE_SIZE_BYTES:
-        raise HTTPException(status_code=422, detail=f"File size must not exceed the {MAX_FILE_SIZE_BYTES / 1024 / 1024} MB limit.")
+        raise HTTPException(
+            status_code=422,
+            detail=f"File size must not exceed the {MAX_FILE_SIZE_BYTES / 1024 / 1024} MB limit."
+        )
 
     file_content = BytesIO(await file.read())
     title, abstract = pdf_processor_service.extract_title_and_abstract(file_content)

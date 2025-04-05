@@ -9,7 +9,7 @@ class PdfProcessorService:
         doc = fitz.open(stream=file_content, filetype="pdf")
         first_page = doc[0]
         text_blocks = first_page.get_text("dict")["blocks"]
-        
+
         title_lines = []
         abstract_lines = []
         abstract_started = False
@@ -37,7 +37,7 @@ class PdfProcessorService:
                         if re.match(r"^abstract\b", text, re.IGNORECASE):
                             abstract_started = True
                             continue
-                        
+
                         # Stop collecting abstract text when reach another major section
                         if abstract_started:
                             if re.match(
