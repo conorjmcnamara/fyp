@@ -12,7 +12,9 @@ class RecommendationRequest(BaseModel):
     def validate_combined_length_and_num_recommendations(cls, values):
         title = values.get("title")
         abstract = values.get("abstract")
-        numRecommendations = values.get("numRecommendations")
+        
+        if not title or not abstract:
+            raise ValueError("title and abstract must be valid strings")
 
         if len(title) + len(abstract) > MAX_TEXT_LENGTH:
             # Prune the title and abstract
@@ -26,10 +28,11 @@ class RecommendationRequest(BaseModel):
             values["title"] = title
             values["abstract"] = abstract
 
+        numRecommendations = values.get("numRecommendations")
         if not (NUM_RECOMMENDATIONS_MIN <= numRecommendations <= NUM_RECOMMENDATIONS_MAX):
             raise ValueError(
                 f"numRecommendations must be between {NUM_RECOMMENDATIONS_MIN} and " +
-                f"{NUM_RECOMMENDATIONS_MAX}."
+                str(NUM_RECOMMENDATIONS_MAX)
             )
 
         return values
