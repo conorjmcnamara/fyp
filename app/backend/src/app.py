@@ -10,7 +10,10 @@ from src.api.v1.routes import router as api_v1_router
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     from src.services.factory import create_recommendation_service
+    from src.services.pdf_processor import PdfProcessorService
+
     app.state.recommendation_service = create_recommendation_service()
+    app.state.pdf_processor_service = PdfProcessorService()
     yield
 
 

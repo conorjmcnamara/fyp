@@ -42,7 +42,7 @@ export const fetchRecommendations = async (
 export const uploadPdf = async (
   file: File,
   numRecommendations: number
-): Promise<{ papers: PaperResponse[] }> => {
+): Promise<RecommendationResponse> => {
   const formData = new FormData();
   formData.append('file', file);
   formData.append('numRecommendations', numRecommendations.toString()); 

@@ -16,7 +16,7 @@ describe('UploadPdf', () => {
 
     expect(screen.getByLabelText(/Click to upload/i)).toBeInTheDocument();
     expect(
-      screen.getByText(/Drag and drop your PDF, or click to select a file/i)
+      screen.getByText(/Drag and drop your research manuscript as a PDF, or click to upload./i)
     ).toBeInTheDocument();
   });
 
@@ -43,7 +43,10 @@ describe('UploadPdf', () => {
 
     expect(
       await screen.findByText(
-        new RegExp(`File size exceeds the ${MAX_FILE_SIZE_BYTES / 1024 / 1024} MB limit`, 'i')
+        new RegExp(
+          `File size must not exceed the ${MAX_FILE_SIZE_BYTES / 1024 / 1024} MB limit`,
+          'i'
+        )
       )
     ).toBeInTheDocument();
   });

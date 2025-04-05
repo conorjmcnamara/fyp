@@ -1,6 +1,6 @@
-from pydantic import BaseModel, field_validator
+from pydantic import BaseModel, model_validator
 from typing import List
-from src.config.settings import NUM_RECOMMENDATIONS_MIN, NUM_RECOMMENDATIONS_MAX
+from src.config.settings import MAX_TEXT_LENGTH, NUM_RECOMMENDATIONS_MIN, NUM_RECOMMENDATIONS_MAX
 
 
 class RecommendationRequest(BaseModel):
@@ -8,15 +8,34 @@ class RecommendationRequest(BaseModel):
     abstract: str
     numRecommendations: int
 
-    @field_validator("numRecommendations")
-    @classmethod
-    def validate_num_recommendations(cls, v: int) -> int:
-        if not (NUM_RECOMMENDATIONS_MIN <= v <= NUM_RECOMMENDATIONS_MAX):
+    @model_validator(mode="before")
+    def validate_combined_length_and_num_recommendations(cls, values):
+        title = values.get("title")
+        abstract = values.get("abstract")
+
+        if not title or not abstract:
+            raise ValueError("title and abstract must be valid strings")
+
+        if len(title) + len(abstract) > MAX_TEXT_LENGTH:
+            # Prune the title and abstract
+            remaining_len = MAX_TEXT_LENGTH - len(title)
+            if remaining_len > 0:
+                abstract = abstract[:remaining_len]
+            else:
+                title = title[:MAX_TEXT_LENGTH]
+                abstract = ""
+
+            values["title"] = title
+            values["abstract"] = abstract
+
+        numRecommendations = values.get("numRecommendations")
+        if not (NUM_RECOMMENDATIONS_MIN <= numRecommendations <= NUM_RECOMMENDATIONS_MAX):
             raise ValueError(
-                f"numRecommendations must be between {NUM_RECOMMENDATIONS_MIN} and "
-                f"{NUM_RECOMMENDATIONS_MAX}"
+                f"numRecommendations must be between {NUM_RECOMMENDATIONS_MIN} and " +
+                str(NUM_RECOMMENDATIONS_MAX)
             )
-        return v
+
+        return values
 
 
 class AuthorResponse(BaseModel):

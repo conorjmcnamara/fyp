@@ -69,6 +69,9 @@ def test_recommend_papers_invalid_types(client: TestClient):
     response = client.post("/api/v1/recommendations", json=request_data)
     assert response.status_code == 422
 
+    data = response.json()
+    assert data["detail"][0]["msg"] == "Value error, title and abstract must be valid strings"
+
 
 def test_recommend_papers_num_recommendations_less_than_min(client: TestClient):
     request_data = {

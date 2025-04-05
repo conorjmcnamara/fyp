@@ -2,7 +2,9 @@ faiss-cpu
 fastapi
 mvlearn
 numpy>=1.25,<2.0
+PyMuPDF
 python-dotenv
+python-multipart
 sqlalchemy
 transformers==4.28.1
 uvicorn
