@@ -12,7 +12,7 @@ class RecommendationRequest(BaseModel):
     def validate_combined_length_and_num_recommendations(cls, values):
         title = values.get("title")
         abstract = values.get("abstract")
-        
+
         if not title or not abstract:
             raise ValueError("title and abstract must be valid strings")
 
