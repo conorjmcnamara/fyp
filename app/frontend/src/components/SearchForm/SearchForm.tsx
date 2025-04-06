@@ -4,8 +4,8 @@ import { fetchRecommendations, PaperResponse } from '../../services/recommendati
 import styles from './SearchForm.module.css';
 
 interface SearchFormProps {
-  numRecommendations: number;
   onResults: (papers: PaperResponse[]) => void;
+  numRecommendations: number;
   maxTextLength?: number;
 }
 

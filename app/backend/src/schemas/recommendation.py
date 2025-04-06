@@ -34,7 +34,6 @@ class RecommendationRequest(BaseModel):
                 f"numRecommendations must be between {NUM_RECOMMENDATIONS_MIN} and " +
                 str(NUM_RECOMMENDATIONS_MAX)
             )
-
         return values
 
 

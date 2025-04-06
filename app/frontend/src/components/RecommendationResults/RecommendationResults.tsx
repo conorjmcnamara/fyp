@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { PAPERS_PER_PAGE } from '../../config/config';
 import { PaperResponse } from '../../services/recommendationService';
 import styles from './RecommendationResults.module.css';
 
@@ -8,7 +9,7 @@ interface RecommendationResultsProps {
 }
 
 const RecommendationResults: React.FC<RecommendationResultsProps> = (
-  { papers, papersPerPage = 5 }
+  { papers, papersPerPage = PAPERS_PER_PAGE }
 ) => {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [expandedPaperId, setExpandedPaperId] = useState<string | null>(null);
