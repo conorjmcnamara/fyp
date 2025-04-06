@@ -5,11 +5,14 @@ import { PaperResponse, uploadPdf } from '../../services/recommendationService';
 import styles from './UploadPdf.module.css';
 
 interface UploadPdfProps {
-  numRecommendations: number;
   onResults: (papers: PaperResponse[]) => void;
+  numRecommendations: number;
+  maxFileSizeBytes?: number;
 }
 
-const UploadPdf: React.FC<UploadPdfProps> = ({ onResults, numRecommendations }) => {
+const UploadPdf: React.FC<UploadPdfProps> = (
+  { onResults, numRecommendations, maxFileSizeBytes = MAX_FILE_SIZE_BYTES }
+) => {
   const [uploadComplete, setUploadComplete] = useState<boolean>(false);
   const [fileName, setFileName] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
@@ -27,8 +30,8 @@ const UploadPdf: React.FC<UploadPdfProps> = ({ onResults, numRecommendations }) 
       return;
     }
     
-    if (file.size > MAX_FILE_SIZE_BYTES) {
-      setError(`File size must not exceed the ${MAX_FILE_SIZE_BYTES / 1024 / 1024} MB limit.`);
+    if (file.size > maxFileSizeBytes) {
+      setError(`File size must not exceed the ${maxFileSizeBytes / 1024 / 1024} MB limit.`);
       return;
     }
 

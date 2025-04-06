@@ -1,4 +1,6 @@
 data/papers/
+htmlcov/
+myenv/
 tests/
 __pycache__
 .pytest_cache
